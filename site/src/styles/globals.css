@@ -4,5 +4,5 @@
 
 body {
   /* @apply bg-neutral-200; */
-  @apply bg-[#1B2838] text-white;
+  @apply bg-steamMarket text-white;
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-interface */
 // src/components/Navbar.tsx
 import Link from "next/link";
 import React, { useState } from "react";
@@ -47,7 +48,7 @@ const DesktopMenuItems: React.FC = () => (
 
 const MobileSidebar: React.FC<{ isOpen: boolean }> = ({ isOpen }) => (
   <div
-    className={`transition-height absolute left-0 top-14 z-10 w-full bg-slate-800 bg-opacity-75 duration-300 ease-in-out ${
+    className={`transition-height absolute left-0 top-[5.3rem] z-10 w-full bg-slate-800 bg-opacity-75 duration-300 ease-in-out ${
       isOpen ? "h-[calc(100vh-3.5rem)]" : "h-0"
     } overflow-hidden lg:hidden`}
   >

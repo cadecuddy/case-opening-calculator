@@ -8,6 +8,10 @@ export default {
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
       },
+      colors: {
+        steamDark: "#101822",
+        steamMarket: "#1B2838",
+      },
     },
   },
   plugins: [],
