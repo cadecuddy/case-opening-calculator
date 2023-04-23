@@ -84,9 +84,9 @@ export const Navbar: React.FC<NavbarProps> = () => {
           <div className="flex items-center justify-between text-lg">
             <Link
               href="/"
-              className="font-roboto cursor-pointer text-center text-xl font-semibold transition duration-150 ease-in hover:scale-105 sm:text-left"
+              className="font-roboto cursor-pointer text-center text-3xl font-semibold transition duration-150 ease-in sm:text-left"
             >
-              CSGO Case Opening Calculator
+              CASE<span className="text-green-500">CALC</span>
             </Link>
             <MobileMenuButton onClick={toggleMenu} />
             <DesktopMenuItems />

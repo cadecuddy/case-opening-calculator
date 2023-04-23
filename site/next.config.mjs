@@ -18,5 +18,15 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'community.cloudflare.steamstatic.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+  },
 };
 export default config;
