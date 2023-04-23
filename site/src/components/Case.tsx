@@ -26,7 +26,7 @@ export default function Case({
 
   const handleQuantityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(event.target.value);
-    if (value >= 1) {
+    if (value >= 0) {
       setQuantity(value);
       onQuantityChange?.(value);
     } else {
@@ -48,9 +48,9 @@ export default function Case({
           <h2 className="text-center text-xl antialiased">{name}</h2>
         </div>
       </div>
-      <p className="bottom-0 text-center font-mono text-xl text-neutral-50 antialiased">
+      <p className="bottom-0 text-center font-mono text-xl text-neutral-300 antialiased">
         <Link href={url} target="_blank">
-          <span className="hover:underline">
+          <span className="bottom-0 hover:underline">
             <Image
               className="mr-2 inline-block rounded-sm"
               src="/steam.svg"

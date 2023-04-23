@@ -9,12 +9,12 @@ export const UnboxingCost: React.FC<UnboxingCostProps> = ({
   totalCost,
   keys,
 }) => {
-  const KEY_COST_USD = 2.5;
+  const KEY_COST_USD = 2.49;
 
   return (
-    <div className="max-w-xs rounded-md bg-slate-700 p-4">
-      <h2 className="mb-2 text-right text-xl font-bold underline">
-        Total Cost
+    <div className="my-4 w-full rounded-md bg-slate-700 p-4 shadow-md lg:max-w-xs">
+      <h2 className="mb-2 text-right text-2xl font-bold underline">
+        TOTAL COST
       </h2>
       <p className="break-words text-right text-2xl font-semibold text-green-500">
         ${totalCost.toLocaleString()}

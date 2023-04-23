@@ -46,6 +46,11 @@ const dbPromise = connectToDB();
 async function fetchPrices() {
   try {
     const response = await axios.get(CASES_URL);
+
+    if (response.data.success !== true || response.data.total_count < 39) {
+      throw new Error("Response was not successful, retrying in 15 minutes");
+    }
+
     const items = response.data.results;
 
     // Parse response into CaseListing objects

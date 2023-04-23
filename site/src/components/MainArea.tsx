@@ -7,13 +7,15 @@ import { Controls } from "./Controls";
 import { UnboxingCost } from "./Unboxing";
 
 interface MainAreaProps {}
-enum SortingState {
+export enum SortingState {
   PriceDescending,
   PriceAscending,
 }
 
+const TaxRates = {};
+
 export const MainArea: React.FC<MainAreaProps> = () => {
-  const KEY_COST_USD = 2.5;
+  const KEY_COST_USD = 2.49;
   const cases = api.cases.getCases.useQuery();
 
   const [sortingState, setSortingState] = React.useState<SortingState>(
@@ -148,7 +150,7 @@ export const MainArea: React.FC<MainAreaProps> = () => {
     setSelectedCases((prevSelectedCases) => {
       const caseIndex = prevSelectedCases.findIndex((c) => c.id === caseId);
 
-      if (caseIndex !== -1 || quantity > 0) {
+      if (caseIndex !== -1 && quantity >= 0) {
         // Update the case quantity
         const updatedSelectedCases = [...prevSelectedCases];
         updatedSelectedCases[caseIndex].quantity = quantity;
@@ -162,11 +164,24 @@ export const MainArea: React.FC<MainAreaProps> = () => {
   return (
     <div className="container mx-auto -mt-8 max-w-7xl">
       <h1 className="text-center text-3xl antialiased">
-        Calculate the cost of your next CS:GO unboxing
+        Calculate the cost of your next{" "}
+        <span className="text-green-500">case opening</span>
       </h1>
+      {cases.data && cases.data[0] && (
+        <p className="text-center text-lg text-gray-500">
+          Prices last updated:{" "}
+          {cases.data?.[0].lastUpdated.getTime() - new Date().getTime() > 0
+            ? "just now"
+            : `${Math.floor(
+                (new Date().getTime() - cases.data?.[0].lastUpdated.getTime()) /
+                  1000 /
+                  60
+              )} minutes ago`}
+        </p>
+      )}
 
       {cases.data && (
-        <div className="my-4 flex flex-col-reverse space-y-4 lg:flex-row lg:items-start lg:justify-between lg:space-x-4 lg:space-y-0">
+        <div className="my-8 flex flex-col-reverse space-y-4 lg:flex-row lg:items-start lg:justify-between lg:space-x-4 lg:space-y-0">
           <SelectedCases
             cases={cases.data
               ?.filter((c) => selectedCases.map(({ id }) => id).includes(c.id))

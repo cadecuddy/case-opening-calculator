@@ -30,7 +30,7 @@ const DesktopMenuItems: React.FC = () => (
       href="/faq"
       className="text-neutral-300 transition-colors duration-100 ease-in hover:text-white"
     >
-      How it works
+      FAQ
     </Link>
     <Link
       href="https://steamcommunity.com/tradeoffer/new/?partner=113227539&token=2JhlD5KH"
