@@ -1,18 +1,24 @@
+/* eslint-disable @typescript-eslint/no-empty-interface */
 import React from "react";
 import { api } from "y/utils/api";
 import Case from "./Case";
+import { SelectedCases } from "./SelectedCases";
+import { Controls } from "./Controls";
+import { UnboxingCost } from "./Unboxing";
 
 enum SortingState {
   PriceDescending,
   PriceAscending,
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+const KEY_COST_USD = 2.5;
+
 interface MainAreaProps {}
 
 export const MainArea: React.FC<MainAreaProps> = () => {
   const cases = api.cases.getCases.useQuery();
 
+  const [selectedCases, setSelectedCases] = React.useState<number[]>([]);
   const [sortingState, setSortingState] = React.useState<SortingState>(
     SortingState.PriceAscending
   );
@@ -41,6 +47,21 @@ export const MainArea: React.FC<MainAreaProps> = () => {
         return sortedData;
     }
   }, [cases.data, sortingState, search]);
+
+  const handleCaseSelection = (caseId: number) => {
+    setSelectedCases((prevSelectedCases) => {
+      const caseIndex = prevSelectedCases.indexOf(caseId);
+      if (caseIndex !== -1) {
+        // Remove the case from the array
+        const updatedSelectedCases = [...prevSelectedCases];
+        updatedSelectedCases.splice(caseIndex, 1);
+        return updatedSelectedCases;
+      } else {
+        // Add the case to the end of the array
+        return [...prevSelectedCases, caseId];
+      }
+    });
+  };
 
   // toggle between sorting states
   const toggleSorting = () => {
@@ -96,36 +117,55 @@ export const MainArea: React.FC<MainAreaProps> = () => {
     }
   };
 
+  const totalCost = React.useMemo(() => {
+    if (!cases.data) {
+      return 0;
+    }
+
+    return selectedCases
+      .map((caseId) => cases.data.find((c) => c.id === caseId)?.price || 0)
+      .reduce((acc, cur) => acc + cur, 0);
+  }, [cases.data, selectedCases]);
+
   return (
     <div className="container mx-auto -mt-8 max-w-7xl">
       <h1 className="text-center text-3xl antialiased">
         Calculate the cost of your next CS:GO unboxing
       </h1>
 
-      <div className="mt-8 flex justify-start space-x-4">
-        <input
-          className="w-64 rounded-md bg-white px-3 py-2 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-          type="search"
-          placeholder="Search for cases"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+      {cases.data && (
+        <div className="my-4 flex flex-col-reverse space-y-4 lg:flex-row lg:items-start lg:justify-between lg:space-x-4 lg:space-y-0">
+          <SelectedCases
+            cases={cases.data
+              ?.filter((c) => selectedCases.includes(c.id))
+              .sort(
+                (a, b) =>
+                  selectedCases.indexOf(a.id) - selectedCases.indexOf(b.id)
+              )}
+            onCaseSelect={handleCaseSelection}
+          />
+          <UnboxingCost totalCost={totalCost} />
+        </div>
+      )}
 
-        <button
-          className="h-11 w-48 rounded-md bg-blue-500 px-4 py-2 text-center text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
-          onClick={toggleSorting}
-        >
-          <div className="flex items-center justify-start text-sm">
-            <p className="mr-2 hidden sm:inline-block">Price: </p>
-            {getSortingIcon()}
-          </div>
-        </button>
-      </div>
+      <Controls
+        search={search}
+        setSearch={setSearch}
+        sortingState={sortingState}
+        toggleSorting={toggleSorting}
+        getSortingIcon={getSortingIcon}
+      />
 
       <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
-        {sortedCases?.map((c) => (
-          <Case key={c.id} {...c} />
-        ))}
+        {sortedCases
+          ?.filter((c) => !selectedCases.includes(c.id))
+          .map((c) => (
+            <Case
+              key={c.id}
+              {...c}
+              onSelect={() => handleCaseSelection(c.id)}
+            />
+          ))}
       </div>
     </div>
   );
