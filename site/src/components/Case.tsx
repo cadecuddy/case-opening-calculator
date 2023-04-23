@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import Link from "next/link";
+import { useState } from "react";
 
 type Props = {
   name: string;
@@ -9,6 +10,7 @@ type Props = {
   url: string;
   onSelect?: () => void;
   showQuantityInput?: boolean;
+  onQuantityChange?: (quantity: number) => void;
 };
 
 export default function Case({
@@ -18,7 +20,20 @@ export default function Case({
   url,
   onSelect,
   showQuantityInput = false,
+  onQuantityChange,
 }: Props) {
+  const [quantity, setQuantity] = useState<number>(1);
+
+  const handleQuantityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(event.target.value);
+    if (value >= 1) {
+      setQuantity(value);
+      onQuantityChange?.(value);
+    } else {
+      setQuantity(1);
+    }
+  };
+
   return (
     <div className="bg-st flex transform rounded-lg bg-steamDark p-4 font-extrabold shadow-lg transition duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:cursor-pointer hover:shadow-2xl sm:inline">
       <div onClick={onSelect}>
@@ -31,11 +46,22 @@ export default function Case({
         />
         <div>
           <h2 className="text-center text-xl antialiased">{name}</h2>
-          <p className="bottom-0 text-center font-mono text-xl text-neutral-50 antialiased">
-            ${price.toFixed(2)}
-          </p>
         </div>
       </div>
+      <p className="bottom-0 text-center font-mono text-xl text-neutral-50 antialiased">
+        <Link href={url} target="_blank">
+          <span className="hover:underline">
+            <Image
+              className="mr-2 inline-block rounded-sm"
+              src="/steam.svg"
+              alt="Steam"
+              width={16}
+              height={16}
+            />
+            ${price.toFixed(2)}
+          </span>
+        </Link>
+      </p>
       {showQuantityInput && (
         <div className="flex justify-center pt-2">
           <input
@@ -43,8 +69,9 @@ export default function Case({
             className="h-8 w-20 rounded-md border-2 border-neutral-50 bg-steamDark text-center text-xl"
             min="1"
             max="99999"
-            defaultValue="1"
+            value={quantity}
             style={{ appearance: "textfield" }}
+            onChange={handleQuantityChange}
           />
         </div>
       )}

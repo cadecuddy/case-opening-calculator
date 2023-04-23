@@ -5,11 +5,13 @@ import Case from "./Case";
 interface SelectedCasesProps {
   cases: CaseListing[];
   onCaseSelect: (caseId: number) => void;
+  onQuantityChange: (caseId: number, quantity: number) => void;
 }
 
 export const SelectedCases: React.FC<SelectedCasesProps> = ({
   cases,
   onCaseSelect,
+  onQuantityChange,
 }) => {
   return (
     <div className="my-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
@@ -22,6 +24,7 @@ export const SelectedCases: React.FC<SelectedCasesProps> = ({
           url={c.url}
           onSelect={() => onCaseSelect(c.id)}
           showQuantityInput={true}
+          onQuantityChange={(quantity) => onQuantityChange(c.id, quantity)}
         />
       ))}
     </div>

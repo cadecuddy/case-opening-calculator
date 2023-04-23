@@ -6,23 +6,22 @@ import { SelectedCases } from "./SelectedCases";
 import { Controls } from "./Controls";
 import { UnboxingCost } from "./Unboxing";
 
+interface MainAreaProps {}
 enum SortingState {
   PriceDescending,
   PriceAscending,
 }
 
-const KEY_COST_USD = 2.5;
-
-interface MainAreaProps {}
-
 export const MainArea: React.FC<MainAreaProps> = () => {
+  const KEY_COST_USD = 2.5;
   const cases = api.cases.getCases.useQuery();
 
-  const [selectedCases, setSelectedCases] = React.useState<number[]>([]);
   const [sortingState, setSortingState] = React.useState<SortingState>(
     SortingState.PriceAscending
   );
-
+  const [selectedCases, setSelectedCases] = React.useState<
+    { id: number; quantity: number }[]
+  >([]);
   const [search, setSearch] = React.useState("");
 
   // get sorted and filtered cases
@@ -50,15 +49,16 @@ export const MainArea: React.FC<MainAreaProps> = () => {
 
   const handleCaseSelection = (caseId: number) => {
     setSelectedCases((prevSelectedCases) => {
-      const caseIndex = prevSelectedCases.indexOf(caseId);
+      const caseIndex = prevSelectedCases.findIndex((c) => c.id === caseId);
+
       if (caseIndex !== -1) {
-        // Remove the case from the array
+        // Remove the case
         const updatedSelectedCases = [...prevSelectedCases];
         updatedSelectedCases.splice(caseIndex, 1);
         return updatedSelectedCases;
       } else {
-        // Add the case to the end of the array
-        return [...prevSelectedCases, caseId];
+        // Add the case with an initial quantity of 1
+        return [...prevSelectedCases, { id: caseId, quantity: 1 }];
       }
     });
   };
@@ -117,15 +117,47 @@ export const MainArea: React.FC<MainAreaProps> = () => {
     }
   };
 
+  const keys = React.useMemo(() => {
+    if (!cases.data) {
+      return 0;
+    }
+
+    return selectedCases
+      .map((selectedCase) => {
+        return selectedCase.quantity;
+      })
+      .reduce((acc, cur) => acc + cur, 0);
+  }, [cases.data, selectedCases]);
+
   const totalCost = React.useMemo(() => {
     if (!cases.data) {
       return 0;
     }
 
     return selectedCases
-      .map((caseId) => cases.data.find((c) => c.id === caseId)?.price || 0)
+      .map((selectedCase) => {
+        const caseData = cases.data.find((c) => c.id === selectedCase.id);
+        const casePrice = caseData?.price || 0;
+        const keyPrice = KEY_COST_USD;
+        return (casePrice + keyPrice) * selectedCase.quantity;
+      })
       .reduce((acc, cur) => acc + cur, 0);
   }, [cases.data, selectedCases]);
+
+  const handleQuantityChange = (caseId: number, quantity: number) => {
+    setSelectedCases((prevSelectedCases) => {
+      const caseIndex = prevSelectedCases.findIndex((c) => c.id === caseId);
+
+      if (caseIndex !== -1 || quantity > 0) {
+        // Update the case quantity
+        const updatedSelectedCases = [...prevSelectedCases];
+        updatedSelectedCases[caseIndex].quantity = quantity;
+        return updatedSelectedCases;
+      }
+
+      return prevSelectedCases;
+    });
+  };
 
   return (
     <div className="container mx-auto -mt-8 max-w-7xl">
@@ -137,14 +169,16 @@ export const MainArea: React.FC<MainAreaProps> = () => {
         <div className="my-4 flex flex-col-reverse space-y-4 lg:flex-row lg:items-start lg:justify-between lg:space-x-4 lg:space-y-0">
           <SelectedCases
             cases={cases.data
-              ?.filter((c) => selectedCases.includes(c.id))
+              ?.filter((c) => selectedCases.map(({ id }) => id).includes(c.id))
               .sort(
                 (a, b) =>
-                  selectedCases.indexOf(a.id) - selectedCases.indexOf(b.id)
+                  selectedCases.findIndex(({ id }) => id === a.id) -
+                  selectedCases.findIndex(({ id }) => id === b.id)
               )}
             onCaseSelect={handleCaseSelection}
+            onQuantityChange={handleQuantityChange}
           />
-          <UnboxingCost totalCost={totalCost} />
+          <UnboxingCost totalCost={totalCost} keys={keys} />
         </div>
       )}
 
@@ -158,7 +192,7 @@ export const MainArea: React.FC<MainAreaProps> = () => {
 
       <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
         {sortedCases
-          ?.filter((c) => !selectedCases.includes(c.id))
+          ?.filter((c) => !selectedCases.map((s) => s.id).includes(c.id))
           .map((c) => (
             <Case
               key={c.id}
