@@ -14,8 +14,9 @@ const faq: React.FC = () => {
               How does the cost calculator work?
             </h2>
             <p className="leading-7 text-neutral-50">
+              Total Cost ={" "}
               <span className="text-green-500">
-                Total Cost = (case price + key price) * quantity
+                (case price + key price) * quantity
               </span>
             </p>
             <p className="leading-7 text-neutral-50">
