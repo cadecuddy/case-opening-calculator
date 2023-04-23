@@ -17,14 +17,14 @@ export const UnboxingCost: React.FC<UnboxingCostProps> = ({
         Total Cost
       </h2>
       <p className="break-words text-right text-2xl font-semibold text-green-500">
-        ${totalCost.toFixed(2).toLocaleString()}
+        ${totalCost.toLocaleString()}
       </p>
       <p className="break-words text-right text-sm font-semibold text-[#b3b3b3]">
-        cases | ${(totalCost - keys * KEY_COST_USD).toFixed(2).toLocaleString()}
+        cases | ${(totalCost - keys * KEY_COST_USD).toLocaleString()}
       </p>
       <p className="break-words text-right text-sm font-semibold text-[#b3b3b3]">
         {keys === 1 ? "key" : "keys"} | $
-        {(keys * KEY_COST_USD).toFixed(2).toLocaleString()}
+        {(keys * KEY_COST_USD).toLocaleString()}
       </p>
     </div>
   );
