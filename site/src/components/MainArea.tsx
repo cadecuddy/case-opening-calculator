@@ -153,6 +153,8 @@ export const MainArea: React.FC<MainAreaProps> = () => {
       if (caseIndex !== -1 && quantity >= 0) {
         // Update the case quantity
         const updatedSelectedCases = [...prevSelectedCases];
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         updatedSelectedCases[caseIndex].quantity = quantity;
         return updatedSelectedCases;
       }
@@ -172,11 +174,14 @@ export const MainArea: React.FC<MainAreaProps> = () => {
           Prices last updated:{" "}
           {cases.data?.[0].lastUpdated.getTime() - new Date().getTime() > 0
             ? "just now"
-            : `${Math.floor(
-                (new Date().getTime() - cases.data?.[0].lastUpdated.getTime()) /
-                  1000 /
-                  60
-              )} minutes ago`}
+            : `${
+                Math.floor(
+                  (new Date().getTime() -
+                    cases.data?.[0].lastUpdated.getTime()) /
+                    1000 /
+                    60
+                ) - cases.data?.[0].lastUpdated.getTimezoneOffset()
+              } minutes ago`}
         </p>
       )}
 
@@ -211,6 +216,8 @@ export const MainArea: React.FC<MainAreaProps> = () => {
           />
         </div>
       )}
+
+      <hr className="my-8" />
 
       <Controls
         search={search}

@@ -24,6 +24,8 @@ export default function Case({
 }: Props) {
   const [quantity, setQuantity] = useState<number>(1);
   const [inputValue, setInputValue] = useState<string>("1");
+  const IMAGE_BASE =
+    "https://community.cloudflare.steamstatic.com/economy/image/";
 
   const handleQuantityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -41,11 +43,11 @@ export default function Case({
     <div className="bg-st inline transform rounded-lg bg-steamDark p-4 font-extrabold shadow-lg transition duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:cursor-pointer hover:shadow-2xl">
       <div onClick={onSelect}>
         <Image
-          src={image}
+          src={IMAGE_BASE + image}
           alt={name}
           className="mx-auto justify-start sm:justify-normal"
           width={200}
-          height={100}
+          height={200}
         />
         <div>
           <h2 className="text-center text-xl antialiased">{name}</h2>
