@@ -38,6 +38,16 @@ async function connectToDB() {
     );`
   );
 
+  await db.run(
+    `CREATE TABLE IF NOT EXISTS CasePriceHistory (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT,
+      price REAL,
+      listings INTEGER,
+      date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );`
+  );
+
   return db;
 }
 
@@ -65,7 +75,17 @@ async function fetchPrices() {
 
     // Save case listings to database
     const db = await dbPromise;
-    await db.run("DELETE FROM CaseListing;");
+
+    await Promise.all(
+      caseListings.map((caseListing) => {
+        const { name, price, listings } = caseListing;
+        return db.run(
+          `INSERT INTO CasePriceHistory (name, price, listings) VALUES (?, ?, ?);`,
+          [name, price, listings]
+        );
+      })
+    );
+
     await Promise.all(
       caseListings.map((caseListing) => {
         const { name, price, listings, image, url, lastUpdated } = caseListing;
@@ -80,8 +100,7 @@ async function fetchPrices() {
   } catch (error) {
     console.error("Error fetching case listings:", error);
   } finally {
-    // Fetch prices again in 15 minutes
-    setTimeout(fetchPrices, 15 * 60 * 1000);
+    (await dbPromise).close;
   }
 }
 
