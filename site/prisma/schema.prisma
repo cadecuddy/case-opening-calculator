@@ -11,8 +11,7 @@ datasource db {
 }
 
 model CaseListing {
-    id          Int      @id @default(autoincrement())
-    name        String
+    name        String   @id
     price       Float
     listings    Int
     image       String
