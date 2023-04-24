@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React from "react";
+import React, { useRef } from "react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -23,14 +23,17 @@ export default function Case({
   onQuantityChange,
 }: Props) {
   const [quantity, setQuantity] = useState<number>(1);
+  const [inputValue, setInputValue] = useState<string>("1");
 
   const handleQuantityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(event.target.value);
-    if (value >= 0) {
-      setQuantity(value);
-      onQuantityChange?.(value);
-    } else {
-      setQuantity(1);
+    const value = event.target.value;
+    const regex = /^([0-9]*\s*)$/;
+
+    if (regex.test(value)) {
+      setInputValue(value);
+      const newQuantity = value === "" ? 0 : Number(value);
+      setQuantity(newQuantity);
+      onQuantityChange?.(newQuantity);
     }
   };
 
@@ -67,9 +70,9 @@ export default function Case({
           <input
             type="number"
             className="h-8 w-20 rounded-md border-2 border-neutral-50 bg-steamDark text-center text-xl"
-            min="1"
+            min="0"
             max="99999"
-            value={quantity}
+            value={inputValue}
             style={{ appearance: "textfield" }}
             onChange={handleQuantityChange}
           />

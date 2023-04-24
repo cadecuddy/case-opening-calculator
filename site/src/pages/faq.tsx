@@ -28,17 +28,18 @@ const faq: React.FC = () => {
               How do I use the cost calculator?
             </h2>
             <p className="leading-7 text-neutral-50">
-              Click on cases from the main page, adjust the quantity for each
-              case by double clicking (or CTRL+A) & changing the amount.
+              Select (click on the case image) cases from the main page, adjust
+              the quantity for each case by double clicking (or CTRL+A) &
+              changing the amount.
             </p>
           </div>
           <div>
             <h2 className="text-2xl font-semibold text-slate-400">
-              How accurate are the case prices?
+              Are the case prices accurate?
             </h2>
             <p className="leading-7 text-neutral-50">
-              Case prices are fetched directly from the Steam marketplace and
-              are updated every 15 minutes.
+              Yes. Case prices are fetched directly from the Steam marketplace
+              and are updated every 15 minutes.
             </p>
           </div>
           <div>

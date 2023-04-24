@@ -12,17 +12,17 @@ export enum SortingState {
   PriceAscending,
 }
 
-const TaxRates = {};
-
 export const MainArea: React.FC<MainAreaProps> = () => {
   const KEY_COST_USD = 2.49;
-  const cases = api.cases.getCases.useQuery();
+  const cases = api.cases.getCases.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+  });
 
   const [sortingState, setSortingState] = React.useState<SortingState>(
     SortingState.PriceAscending
   );
   const [selectedCases, setSelectedCases] = React.useState<
-    { id: number; quantity: number }[]
+    { id: string; quantity: number }[]
   >([]);
   const [search, setSearch] = React.useState("");
 
@@ -49,7 +49,7 @@ export const MainArea: React.FC<MainAreaProps> = () => {
     }
   }, [cases.data, sortingState, search]);
 
-  const handleCaseSelection = (caseId: number) => {
+  const handleCaseSelection = (caseId: string) => {
     setSelectedCases((prevSelectedCases) => {
       const caseIndex = prevSelectedCases.findIndex((c) => c.id === caseId);
 
@@ -138,7 +138,7 @@ export const MainArea: React.FC<MainAreaProps> = () => {
 
     return selectedCases
       .map((selectedCase) => {
-        const caseData = cases.data.find((c) => c.id === selectedCase.id);
+        const caseData = cases.data.find((c) => c.name === selectedCase.id);
         const casePrice = caseData?.price || 0;
         const keyPrice = KEY_COST_USD;
         return (casePrice + keyPrice) * selectedCase.quantity;
@@ -146,7 +146,7 @@ export const MainArea: React.FC<MainAreaProps> = () => {
       .reduce((acc, cur) => acc + cur, 0);
   }, [cases.data, selectedCases]);
 
-  const handleQuantityChange = (caseId: number, quantity: number) => {
+  const handleQuantityChange = (caseId: string, quantity: number) => {
     setSelectedCases((prevSelectedCases) => {
       const caseIndex = prevSelectedCases.findIndex((c) => c.id === caseId);
 
@@ -184,16 +184,31 @@ export const MainArea: React.FC<MainAreaProps> = () => {
         <div className="my-8 flex flex-col-reverse space-y-4 lg:flex-row lg:items-start lg:justify-between lg:space-x-4 lg:space-y-0">
           <SelectedCases
             cases={cases.data
-              ?.filter((c) => selectedCases.map(({ id }) => id).includes(c.id))
+              ?.filter((c) =>
+                selectedCases.map(({ id }) => id).includes(c.name)
+              )
               .sort(
                 (a, b) =>
-                  selectedCases.findIndex(({ id }) => id === a.id) -
-                  selectedCases.findIndex(({ id }) => id === b.id)
+                  selectedCases.findIndex(({ id }) => id === a.name) -
+                  selectedCases.findIndex(({ id }) => id === b.name)
               )}
             onCaseSelect={handleCaseSelection}
             onQuantityChange={handleQuantityChange}
           />
-          <UnboxingCost totalCost={totalCost} keys={keys} />
+          <UnboxingCost
+            totalCost={totalCost}
+            keys={keys}
+            cases={selectedCases.map((selectedCase) => {
+              const caseData = cases.data.find(
+                (c) => c.name === selectedCase.id
+              );
+              return {
+                name: selectedCase.id,
+                price: caseData?.price || 0,
+                quantity: selectedCase.quantity,
+              };
+            })}
+          />
         </div>
       )}
 
@@ -207,12 +222,12 @@ export const MainArea: React.FC<MainAreaProps> = () => {
 
       <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
         {sortedCases
-          ?.filter((c) => !selectedCases.map((s) => s.id).includes(c.id))
+          ?.filter((c) => !selectedCases.map((s) => s.id).includes(c.name))
           .map((c) => (
             <Case
-              key={c.id}
+              key={c.name}
               {...c}
-              onSelect={() => handleCaseSelection(c.id)}
+              onSelect={() => handleCaseSelection(c.name)}
             />
           ))}
       </div>
