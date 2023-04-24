@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React, { useRef } from "react";
+import React from "react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -22,7 +22,7 @@ export default function Case({
   showQuantityInput = false,
   onQuantityChange,
 }: Props) {
-  const [quantity, setQuantity] = useState<number>(1);
+  const [, setQuantity] = useState<number>(1);
   const [inputValue, setInputValue] = useState<string>("1");
   const IMAGE_BASE =
     "https://community.cloudflare.steamstatic.com/economy/image/";

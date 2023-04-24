@@ -1,5 +1,5 @@
 import React from "react";
-import { SortingState } from "./MainArea";
+import type { SortingState } from "./MainArea";
 
 interface ControlsProps {
   search: string;

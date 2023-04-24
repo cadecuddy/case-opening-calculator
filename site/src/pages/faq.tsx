@@ -14,16 +14,16 @@ const faq: React.FC = () => {
               Will there be support for other currencies?
             </h2>
             <p className="leading-7 text-neutral-50">
-              I'm working on adding support for other currencies. This is a bit
-              difficult since it goes beyond just converting the market prices
-              to the desired currency. Case keys cost strangely different
+              I&apos;m working on adding support for other currencies. This is a
+              bit difficult since it goes beyond just converting the market
+              prices to the desired currency. Case keys cost strangely different
               amounts in different countries, varying based on both government
               regulations and conversion rates.
             </p>
             <br />
             <p className="italic leading-7 text-green-500">
-              TL;DR: I'm working on it, might just convert USD to the desired
-              currency for now.
+              TL;DR: I&apos;m working on it, might just convert USD to the
+              desired currency for now.
             </p>
           </div>
           <div>
@@ -76,8 +76,8 @@ const faq: React.FC = () => {
             </h2>
             <p className="leading-7 text-neutral-50">
               If you feel this tool saved you some time you can donate skins via
-              the "Donate" button. All skins are appreciated, but certainly not
-              necessary.
+              the &quot;Donate&quot; button. All skins are appreciated, but
+              certainly not necessary.
             </p>
             <br />
             <p className="leading-7 text-green-500">
