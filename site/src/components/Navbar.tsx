@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 // src/components/Navbar.tsx
+import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 
@@ -87,7 +88,20 @@ export const Navbar: React.FC<NavbarProps> = () => {
               href="/"
               className="font-roboto cursor-pointer text-center text-3xl font-semibold transition duration-150 ease-in sm:text-left"
             >
-              CASE<span className="text-green-500">CALC</span>
+              <div className="flex items-center space-x-2">
+                <Image
+                  src="https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsXE1xNwVDv7WrFA5pnabNJGwSuN3gxtnawKOlMO6HzzhQucAm0uvFo4n2iw3h_UM-ZmilJNeLMlhpjfjxEoE"
+                  alt="logo"
+                  className="h-[4.5rem] w-20"
+                  width={200}
+                  height={200}
+                />
+                <span>
+                  CASE
+                  <br />
+                  <span className="text-green-500">CALC</span>
+                </span>
+              </div>
             </Link>
             <MobileMenuButton onClick={toggleMenu} />
             <DesktopMenuItems />
