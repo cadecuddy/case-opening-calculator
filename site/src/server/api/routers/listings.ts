@@ -21,4 +21,9 @@ export const listingRouter = createTRPCRouter({
 
     return packages;
   }),
+  getListings: publicProcedure.query(async () => {
+    const listings = await prisma.listing.findMany();
+
+    return listings;
+  }),
 });
