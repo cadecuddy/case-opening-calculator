@@ -6,3 +6,19 @@ body {
   /* @apply bg-neutral-200; */
   @apply bg-steamMarket text-white;
 }
+
+.dropdown:hover .dropdown-content {
+  @apply block;
+}
+
+.btn {
+  @apply bg-steamDark;
+}
+
+.dropdown {
+  @apply text-neutral-100;
+}
+
+.dropdown-content {
+  @apply w-full;
+}

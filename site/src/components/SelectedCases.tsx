@@ -1,9 +1,9 @@
 import React from "react";
-import type { CaseListing } from "@prisma/client";
+import type { Listing } from "@prisma/client";
 import Case from "./Case";
 
 interface SelectedCasesProps {
-  cases: CaseListing[];
+  cases: Listing[];
   onCaseSelect: (caseId: string) => void;
   onQuantityChange: (caseId: string, quantity: number) => void;
 }
