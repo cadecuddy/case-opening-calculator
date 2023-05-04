@@ -114,27 +114,23 @@ export const MainArea: React.FC<MainAreaProps> = () => {
 
   // get sorted and filtered cases
   const sortedItems = React.useMemo(() => {
-    let data: Listing[];
+    let data: Listing[] = [];
 
-    switch (activeContainer) {
-      case ContainerType.Case:
-        data = listings?.data?.filter((item) => item.type === "CASE");
-        setDisplayedItemsCount(LOAD_INCREMENT);
-        break;
-      case ContainerType.Capsule:
-        data = listings?.data?.filter((item) => item.type === "CAPSULE");
-        setDisplayedItemsCount(LOAD_INCREMENT);
-        break;
-      case ContainerType.Package:
-        data = listings?.data?.filter((item) => item.type === "PACKAGE");
-        setDisplayedItemsCount(LOAD_INCREMENT);
-        break;
-      default:
-        data = [];
-    }
-
-    if (!data) {
-      return data;
+    if (listings?.data) {
+      switch (activeContainer) {
+        case ContainerType.Case:
+          data = listings.data.filter((item) => item.type === "CASE");
+          setDisplayedItemsCount(LOAD_INCREMENT);
+          break;
+        case ContainerType.Capsule:
+          data = listings.data.filter((item) => item.type === "CAPSULE");
+          setDisplayedItemsCount(LOAD_INCREMENT);
+          break;
+        case ContainerType.Package:
+          data = listings.data.filter((item) => item.type === "PACKAGE");
+          setDisplayedItemsCount(LOAD_INCREMENT);
+          break;
+      }
     }
 
     // filter by search
@@ -169,8 +165,12 @@ export const MainArea: React.FC<MainAreaProps> = () => {
         return updatedSelectedCases;
       } else {
         const itemListing = sortedItems.find((c) => c.name === itemId);
-        // Add the case with an initial quantity of 1
-        return [...prevSelectedItems, { listing: itemListing, quantity: 1 }];
+        if (itemListing) {
+          // Add the case with an initial quantity of 1
+          return [...prevSelectedItems, { listing: itemListing, quantity: 1 }];
+        } else {
+          return prevSelectedItems;
+        }
       }
     });
   };
