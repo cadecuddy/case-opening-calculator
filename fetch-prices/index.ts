@@ -14,6 +14,10 @@ interface Listing {
 
 const CASES_URL =
   "https://steamcommunity.com/market/search/render/?search_descriptions=0&query=case&sort_column=default&sort_dir=desc&appid=730&norender=1&count=50&category_730_Type[]=tag_CSGO_Type_WeaponCase";
+const PACKAGES_URL = (start: number) =>
+  `https://steamcommunity.com/market/search/render/?query=package&search_descriptions=case&sort_column=price_desc&sort_dir=desc&appid=730&norender=1&count=100&category_730_Type[]=tag_CSGO_Type_WeaponCase&start=${start}`;
+const CAPSULES_URL = (start: number) =>
+  `https://steamcommunity.com/market/search/render/?query=capsule&search_descriptions=case&sort_column=default&sort_dir=asc&appid=730&norender=1&count=100&category_730_Type[]=tag_CSGO_Type_WeaponCase&start=${start}`;
 
 const LISTING_BASE = "https://steamcommunity.com/market/listings/730/";
 
@@ -96,9 +100,6 @@ async function fetchCases(db: mysql.Connection) {
   await saveToDB(db, caseListings, "CASE");
 }
 
-const PACKAGES_URL = (start: number) =>
-  `https://steamcommunity.com/market/search/render/?query=package&search_descriptions=case&sort_column=price_desc&sort_dir=desc&appid=730&norender=1&count=100&category_730_Type[]=tag_CSGO_Type_WeaponCase&start=${start}`;
-
 async function fetchPackages(db: mysql.Connection, totalItems: number) {
   const packageListings = new Set<Listing>();
 
@@ -130,9 +131,6 @@ async function fetchPackages(db: mysql.Connection, totalItems: number) {
 
   await saveToDB(db, Array.from(packageListings), "PACKAGE");
 }
-
-const CAPSULES_URL = (start: number) =>
-  `https://steamcommunity.com/market/search/render/?query=capsule&search_descriptions=case&sort_column=default&sort_dir=asc&appid=730&norender=1&count=100&category_730_Type[]=tag_CSGO_Type_WeaponCase&start=${start}`;
 
 async function fetchCapsules(db: mysql.Connection, totalItems: number) {
   const capsuleListings = new Set<Listing>();
@@ -214,7 +212,7 @@ async function saveToDB(db: mysql.Connection, listings: any, type: string) {
     })
   );
 
-  console.log(`Saved ${listings.length} ${type} listings to database`);
+  console.log(`Fetched ${listings.length} ${type} listings`);
 }
 
 async function fetchPrices() {
