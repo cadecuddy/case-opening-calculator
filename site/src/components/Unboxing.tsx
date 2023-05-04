@@ -1,11 +1,28 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
+
+interface Item {
+  name: string;
+  price: number;
+  quantity: number;
+  type: string;
+}
 
 interface UnboxingCostProps {
   totalCost: number;
   keys: number;
-  items: Array<{ name: string; price: number; quantity: number; type: string }>;
+  items: Item[];
   onReset: () => void;
 }
+
+const CurrencyDisplay: React.FC<{ amount: number }> = ({ amount }) => (
+  <div className="w-1/2 rounded-md bg-steamDark p-1 text-center text-neutral-200">
+    $
+    {amount.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}
+  </div>
+);
 
 export const UnboxingCost: React.FC<UnboxingCostProps> = ({
   totalCost,
@@ -29,6 +46,14 @@ export const UnboxingCost: React.FC<UnboxingCostProps> = ({
   const salesTaxAmount = applySalesTax ? keys * KEY_COST_USD * SALES_TAX : 0;
   const adjustedKeyCost = keys * KEY_COST_USD + salesTaxAmount;
   const adjustedTotalCost = totalCost + salesTaxAmount;
+
+  const sortedItems = useMemo(
+    () =>
+      items.sort(
+        (a: Item, b: Item) => b.quantity * b.price - a.quantity * a.price
+      ),
+    [items]
+  );
 
   return (
     <div className="mx-auto my-4 w-full rounded-md bg-slate-700 p-4 text-left shadow-md sm:max-w-xs">
@@ -82,51 +107,38 @@ export const UnboxingCost: React.FC<UnboxingCostProps> = ({
             >
               {expanded ? "−" : "+"} containers
             </label>
-            <div className="w-1/2 rounded-md bg-steamDark p-1 text-center text-neutral-200">
-              $
-              {(totalCost - keys * KEY_COST_USD).toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </div>
+            <CurrencyDisplay amount={totalCost - keys * KEY_COST_USD} />
           </div>
+
           {expanded && (
             <ul className="list-inside list-disc space-y-1 pb-2 text-neutral-400">
-              {items
-                .sort((a, b) => b.quantity * b.price - a.quantity * a.price)
-                .map((caseItem) => (
-                  <div
-                    key={caseItem.name}
-                    className="flex justify-between text-left text-sm"
-                  >
-                    <span>
-                      {caseItem.quantity} × {caseItem.name}
-                    </span>
-                    <span className="text-green-500">
-                      $
-                      {(caseItem.price * caseItem.quantity).toLocaleString(
-                        undefined,
-                        {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        }
-                      )}
-                    </span>
-                  </div>
-                ))}
+              {sortedItems.map((caseItem) => (
+                <div
+                  key={caseItem.name}
+                  className="flex justify-between text-left text-sm"
+                >
+                  <span>
+                    {caseItem.quantity} × {caseItem.name}
+                  </span>
+                  <span className="text-green-500">
+                    $
+                    {(caseItem.price * caseItem.quantity).toLocaleString(
+                      undefined,
+                      {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      }
+                    )}
+                  </span>
+                </div>
+              ))}
             </ul>
           )}
           <div className="flex items-center justify-center space-x-2 sm:justify-start">
             <label className="w-28 font-semibold text-neutral-200">
               {keys === 1 ? "key" : "keys"}:
             </label>
-            <div className="w-1/2 rounded-md bg-steamDark p-1 text-center text-neutral-200">
-              $
-              {adjustedKeyCost.toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </div>
+            <CurrencyDisplay amount={adjustedKeyCost} />
           </div>
           <div className="mt-2 flex items-center justify-center sm:justify-start">
             <input

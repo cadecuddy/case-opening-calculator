@@ -7,7 +7,6 @@ import { Controls } from "./Controls";
 import { UnboxingCost } from "./Unboxing";
 import { Listing } from "@prisma/client";
 import Loading from "./Loading";
-import FixedSizeGrid from "react-window";
 
 interface MainAreaProps {}
 

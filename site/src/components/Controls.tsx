@@ -108,12 +108,12 @@ export const Controls: React.FC<ControlsProps> = ({
           className="h-12 w-full rounded-md bg-steamDark px-4 py-2 text-center align-middle text-sm font-medium text-white hover:bg-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 sm:w-48"
           onClick={toggleSorting}
         >
-          <div className="flex items-center justify-center text-sm sm:justify-start">
+          <div className="flex items-center justify-center text-base sm:justify-start">
             {sortingState == SortingState.PriceAscending ||
             sortingState == SortingState.PriceDescending ? (
-              <p className="mr-2 hidden sm:inline-block">Price: </p>
+              <p className="mr-2 inline-block">Price: </p>
             ) : (
-              <p className="mr-2 hidden sm:inline-block">Alphabetical</p>
+              <p className="mr-2 inline-block">Alpha</p>
             )}
             {getSortingIcon()}
           </div>
