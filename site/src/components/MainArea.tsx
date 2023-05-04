@@ -23,9 +23,37 @@ export enum ContainerType {
 }
 
 const KEY_COST_USD = 2.49;
+const LOAD_INCREMENT = 20;
 
 export const MainArea: React.FC<MainAreaProps> = () => {
-  const gridRef = React.useRef(null);
+  const [displayedItemsCount, setDisplayedItemsCount] =
+    React.useState(LOAD_INCREMENT);
+  const loadMoreItems = () => {
+    setDisplayedItemsCount((prevCount) => prevCount + LOAD_INCREMENT * 2);
+  };
+
+  React.useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries: IntersectionObserverEntry[]) => {
+        if (entries[0] && entries[0].isIntersecting) {
+          loadMoreItems();
+        }
+      },
+      { threshold: 1 }
+    );
+
+    const target = document.getElementById("load-more-target");
+    if (target) {
+      observer.observe(target);
+    }
+
+    return () => {
+      if (target) {
+        observer.unobserve(target);
+      }
+    };
+  }, []);
+
   const listings = api.listings.getListings.useQuery(undefined, {
     refetchOnWindowFocus: false,
   });
@@ -91,12 +119,15 @@ export const MainArea: React.FC<MainAreaProps> = () => {
     switch (activeContainer) {
       case ContainerType.Case:
         data = listings?.data?.filter((item) => item.type === "CASE");
+        setDisplayedItemsCount(LOAD_INCREMENT);
         break;
       case ContainerType.Capsule:
         data = listings?.data?.filter((item) => item.type === "CAPSULE");
+        setDisplayedItemsCount(LOAD_INCREMENT);
         break;
       case ContainerType.Package:
         data = listings?.data?.filter((item) => item.type === "PACKAGE");
+        setDisplayedItemsCount(LOAD_INCREMENT);
         break;
       default:
         data = [];
@@ -314,7 +345,7 @@ export const MainArea: React.FC<MainAreaProps> = () => {
         setActiveContainer={setActiveContainer}
       />
 
-      <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
+      {/* <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
         {sortedItems
           ?.filter(
             (item) =>
@@ -327,6 +358,22 @@ export const MainArea: React.FC<MainAreaProps> = () => {
               onSelect={() => handleItemSelection(item.name)}
             />
           ))}
+      </div> */}
+      <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
+        {sortedItems
+          ?.slice(0, displayedItemsCount)
+          .filter(
+            (item) =>
+              !selectedItems.map((s) => s.listing.name).includes(item.name)
+          )
+          .map((item) => (
+            <MemoizedCase
+              key={item.name}
+              {...item}
+              onSelect={() => handleItemSelection(item.name)}
+            />
+          ))}
+        <div id="load-more-target" className="h-0 w-full"></div>
       </div>
 
       {!sortedItems && (
