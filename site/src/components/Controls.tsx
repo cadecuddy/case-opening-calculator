@@ -82,7 +82,6 @@ export const Controls: React.FC<ControlsProps> = ({
                 <a
                   onClick={() => handleActiveContainerChange(value)}
                   className="p-2"
-                  href="#"
                 >
                   {label}
                 </a>
