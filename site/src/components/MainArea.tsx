@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 import React from "react";
 import { api } from "y/utils/api";
-import Case from "./Case";
+import { MemoizedCase } from "./Case";
 import { SelectedCases } from "./SelectedCases";
 import { Controls } from "./Controls";
 import { UnboxingCost } from "./Unboxing";
 import { Listing } from "@prisma/client";
 import Loading from "./Loading";
+import FixedSizeGrid from "react-window";
 
 interface MainAreaProps {}
 
@@ -25,6 +26,7 @@ export enum ContainerType {
 const KEY_COST_USD = 2.49;
 
 export const MainArea: React.FC<MainAreaProps> = () => {
+  const gridRef = React.useRef(null);
   const listings = api.listings.getListings.useQuery(undefined, {
     refetchOnWindowFocus: false,
   });
@@ -320,7 +322,7 @@ export const MainArea: React.FC<MainAreaProps> = () => {
               !selectedItems.map((s) => s.listing.name).includes(item.name)
           )
           .map((item) => (
-            <Case
+            <MemoizedCase
               key={item.name}
               {...item}
               onSelect={() => handleItemSelection(item.name)}
@@ -328,7 +330,7 @@ export const MainArea: React.FC<MainAreaProps> = () => {
           ))}
       </div>
 
-      {!sortedItems?.length && (
+      {!sortedItems && (
         <div className="flex items-center justify-center">
           <Loading />
         </div>

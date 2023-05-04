@@ -13,6 +13,7 @@ type Props = {
   onQuantityChange?: (quantity: number) => void;
 };
 
+// export case as memoized component
 export default function Case({
   name,
   image,
@@ -83,3 +84,5 @@ export default function Case({
     </div>
   );
 }
+
+export const MemoizedCase = React.memo(Case);

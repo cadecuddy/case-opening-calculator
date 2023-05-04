@@ -1,6 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React from "react";
 import { SortingState } from "./MainArea";
 import { ContainerType } from "./MainArea";
+import { debounce } from "lodash";
 
 interface ControlsProps {
   search: string;
@@ -42,6 +46,17 @@ export const Controls: React.FC<ControlsProps> = ({
     { label: "Package", value: ContainerType.Package },
   ];
 
+  const [inputValue, setInputValue] = React.useState(search);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+    debouncedSetSearch(e.target.value);
+  };
+
+  const debouncedSetSearch = debounce((value: string) => {
+    setSearch(value);
+  }, 250);
+
   return (
     <div>
       <div className="mt-8 flex flex-col justify-start space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
@@ -49,9 +64,9 @@ export const Controls: React.FC<ControlsProps> = ({
           className="w-full min-w-[64] rounded-md bg-white px-3 py-2 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:w-1/2"
           type="search"
           placeholder="Search for items"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          onClick={() => setSearch("")}
+          value={inputValue}
+          onChange={handleSearchChange}
+          onClick={() => setInputValue("")}
         />
 
         <div className="flex-grow" />
