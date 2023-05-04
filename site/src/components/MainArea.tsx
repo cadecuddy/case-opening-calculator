@@ -6,6 +6,7 @@ import { SelectedCases } from "./SelectedCases";
 import { Controls } from "./Controls";
 import { UnboxingCost } from "./Unboxing";
 import { Listing } from "@prisma/client";
+import Loading from "./Loading";
 
 interface MainAreaProps {}
 
@@ -233,21 +234,21 @@ export const MainArea: React.FC<MainAreaProps> = () => {
         Calculate the cost of your next{" "}
         <span className="text-green-500">case opening</span>
       </h1>
-      {listings.data && listings.data[0] && (
-        <p className="text-center text-lg text-gray-500">
-          Prices last updated:{" "}
-          {listings.data?.[0].lastUpdated.getTime() - new Date().getTime() > 0
+      <p className="text-center text-lg text-gray-500">
+        Prices last updated:{" "}
+        {listings.data && listings.data[0]
+          ? listings.data?.[0].lastUpdated.getTime() - new Date().getTime() > 0
             ? "just now"
             : `${Math.floor(
                 (new Date().getTime() -
                   listings.data?.[0].lastUpdated.getTime()) /
                   1000 /
                   60
-              )} minutes ago`}
-        </p>
-      )}
+              )} minutes ago`
+          : "loading..."}
+      </p>
 
-      {listings.data && (
+      {listings.data ? (
         <div className="my-8 flex flex-col-reverse space-y-4 lg:flex-row lg:items-start lg:justify-between lg:space-x-4 lg:space-y-0">
           <SelectedCases
             cases={listings.data
@@ -285,6 +286,20 @@ export const MainArea: React.FC<MainAreaProps> = () => {
             onReset={resetSelectedItems}
           />
         </div>
+      ) : (
+        <div className="my-8 flex flex-col-reverse space-y-4 lg:flex-row lg:items-start lg:justify-between lg:space-x-4 lg:space-y-0">
+          <SelectedCases
+            cases={[]}
+            onCaseSelect={handleItemSelection}
+            onQuantityChange={handleQuantityChange}
+          />
+          <UnboxingCost
+            totalCost={totalCost}
+            keys={keys}
+            items={[]}
+            onReset={resetSelectedItems}
+          />
+        </div>
       )}
 
       <hr className="my-8" />
@@ -312,6 +327,12 @@ export const MainArea: React.FC<MainAreaProps> = () => {
             />
           ))}
       </div>
+
+      {!sortedItems?.length && (
+        <div className="flex items-center justify-center">
+          <Loading />
+        </div>
+      )}
     </div>
   );
 };
