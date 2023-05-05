@@ -16,11 +16,12 @@ datasource db {
 //     url      = env("DATABASE_URL")
 // }
 
-model CaseListing {
+model Listing {
     name        String   @id
     price       Float
     listings    Int
     image       String
     url         String
+    type        String
     lastUpdated DateTime
 }

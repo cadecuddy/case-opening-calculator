@@ -13,6 +13,7 @@ type Props = {
   onQuantityChange?: (quantity: number) => void;
 };
 
+// export case as memoized component
 export default function Case({
   name,
   image,
@@ -40,7 +41,7 @@ export default function Case({
   };
 
   return (
-    <div className="bg-st inline transform rounded-lg bg-steamDark p-4 font-extrabold shadow-lg transition duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:cursor-pointer hover:shadow-2xl">
+    <div className="bg-st flex h-full transform flex-col justify-between rounded-lg bg-steamDark p-4 font-extrabold shadow-lg transition duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:cursor-pointer hover:shadow-2xl">
       <div onClick={onSelect}>
         <Image
           src={IMAGE_BASE + image}
@@ -53,33 +54,37 @@ export default function Case({
           <h2 className="text-center text-xl antialiased">{name}</h2>
         </div>
       </div>
-      <p className="bottom-0 text-center font-mono text-xl text-neutral-300 antialiased">
-        <Link href={url} target="_blank">
-          <span className="bottom-0 hover:underline">
-            <Image
-              className="mr-2 inline-block rounded-sm"
-              src="/steam.svg"
-              alt="Steam"
-              width={16}
-              height={16}
+      <div>
+        <p className="bottom-0 text-center font-mono text-xl text-neutral-300 antialiased">
+          <Link href={url} target="_blank">
+            <span className="bottom-0 hover:underline">
+              <Image
+                className="mr-2 inline-block rounded-sm"
+                src="/steam.svg"
+                alt="Steam"
+                width={16}
+                height={16}
+              />
+              ${price.toFixed(2)}
+            </span>
+          </Link>
+        </p>
+        {showQuantityInput && (
+          <div className="flex justify-center pt-2">
+            <input
+              type="number"
+              className="h-8 w-20 rounded-md border-2 border-neutral-50 bg-steamDark text-center text-xl"
+              min="0"
+              max="99999"
+              value={inputValue}
+              style={{ appearance: "textfield" }}
+              onChange={handleQuantityChange}
             />
-            ${price.toFixed(2)}
-          </span>
-        </Link>
-      </p>
-      {showQuantityInput && (
-        <div className="flex justify-center pt-2">
-          <input
-            type="number"
-            className="h-8 w-20 rounded-md border-2 border-neutral-50 bg-steamDark text-center text-xl"
-            min="0"
-            max="99999"
-            value={inputValue}
-            style={{ appearance: "textfield" }}
-            onChange={handleQuantityChange}
-          />
-        </div>
-      )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
+
+export const MemoizedCase = React.memo(Case);

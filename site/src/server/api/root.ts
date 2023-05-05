@@ -1,5 +1,5 @@
 import { createTRPCRouter } from "y/server/api/trpc";
-import { caseRouter } from "y/server/api/routers/cases";
+import { listingRouter } from "y/server/api/routers/listings";
 
 /**
  * This is the primary router for your server.
@@ -7,7 +7,7 @@ import { caseRouter } from "y/server/api/routers/cases";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  cases: caseRouter,
+  listings: listingRouter,
 });
 
 // export type definition of API
