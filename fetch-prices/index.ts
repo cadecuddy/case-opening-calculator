@@ -231,10 +231,10 @@ async function fetchPrices() {
 }
 
 // DEV ONLY
-fetchPrices();
+// fetchPrices();
 
 // LAMBDA HANDLER
-// exports.handler = async (event: any) => {
-//   await fetchPrices();
-//   return { statusCode: 200, body: "Successfully fetched case listings." };
-// };
+exports.handler = async (event: any) => {
+  await fetchPrices();
+  return { statusCode: 200, body: "Successfully fetched case listings." };
+};
