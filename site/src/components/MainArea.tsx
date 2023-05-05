@@ -345,24 +345,26 @@ export const MainArea: React.FC<MainAreaProps> = () => {
         setActiveContainer={setActiveContainer}
       />
 
-      <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
-        {sortedItems
-          ?.slice(0, displayedItemsCount)
-          .filter(
-            (item) =>
-              !selectedItems.map((s) => s.listing.name).includes(item.name)
-          )
-          .map((item) => (
-            <MemoizedCase
-              key={item.name}
-              {...item}
-              onSelect={() => handleItemSelection(item.name)}
-            />
-          ))}
-        <div id="load-more-target" className="h-0 w-full"></div>
-      </div>
+      {sortedItems && (
+        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
+          {sortedItems
+            ?.slice(0, displayedItemsCount)
+            .filter(
+              (item) =>
+                !selectedItems.map((s) => s.listing.name).includes(item.name)
+            )
+            .map((item) => (
+              <MemoizedCase
+                key={item.name}
+                {...item}
+                onSelect={() => handleItemSelection(item.name)}
+              />
+            ))}
+          <div id="load-more-target" className="h-0 w-full"></div>
+        </div>
+      )}
 
-      {!sortedItems && (
+      {sortedItems.length == 0 && (
         <div className="flex items-center justify-center">
           <Loading />
         </div>
