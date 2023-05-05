@@ -11,7 +11,7 @@ A cost calculator for CSGO container unboxings - available at [casecalculator.ap
 - [x] Search functionality
 - [ ] International currency support
 
-## Stack
+## Stack 📚
 This monorepo contains 2 directories:
 ### fetch-prices/
 `index.ts` - lambda handler that queries the Steam Community Market for container prices & updates Postgresql DB (Planetscale). Queried every 15 mins via AWS EventBridge Scheduler
