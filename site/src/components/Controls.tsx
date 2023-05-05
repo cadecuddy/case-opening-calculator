@@ -66,7 +66,6 @@ export const Controls: React.FC<ControlsProps> = ({
           placeholder="Search for items"
           value={inputValue}
           onChange={handleSearchChange}
-          onClick={() => setInputValue("")}
         />
 
         <div className="flex-grow" />
@@ -110,7 +109,7 @@ export const Controls: React.FC<ControlsProps> = ({
         >
           <div className="flex items-center justify-center text-base sm:justify-start">
             {sortingState == SortingState.PriceAscending ||
-            sortingState == SortingState.PriceDescending ? (
+              sortingState == SortingState.PriceDescending ? (
               <p className="mr-2 inline-block">Price: </p>
             ) : (
               <p className="mr-2 inline-block">Alpha</p>
