@@ -12,7 +12,7 @@ export const MetaHeader: React.FC<MetaHeaderProps> = ({
   title = "CS:GO Case Opening Calculator",
   description = "Calculate the cost of a CS:GO unboxing. Select from cases, sticker capsules, and souvenir packages - all with real-time prices.",
   keywords = "CSGO, case, opening, calculator, budget, tool, csgo unboxing calculator, unboxing, CS:GO, cs2",
-  ogImage = "/images/og-image.jpg",
+  ogImage = "/ogimg.png",
 }) => {
   return (
     <Head>
@@ -23,6 +23,21 @@ export const MetaHeader: React.FC<MetaHeaderProps> = ({
       <meta property="og:description" content={description} />
       <meta property="og:type" content="website" />
       <meta property="og:image" content={ogImage} />
+      <meta property="og:url" content="https://www.casecalculator.app/" />
+
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta property="twitter:domain" content="casecalculator.app" />
+      <meta property="twitter:url" content="https://www.casecalculator.app/" />
+      <meta name="twitter:title" content="CS:GO Case Opening Calculator" />
+      <meta
+        name="twitter:description"
+        content="Calculate the cost of a CS:GO unboxing. Select from cases, sticker capsules, and souvenir packages - all with real-time prices."
+      />
+      <meta
+        name="twitter:image"
+        content="https://casecalculator.app/ogimg.png"
+      />
+
       <link rel="icon" href="/favicon.ico" />
     </Head>
   );
