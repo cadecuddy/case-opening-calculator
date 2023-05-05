@@ -1,5 +1,5 @@
 # CSGO Case Calculator
-A cost calculator for CSGO container unboxings.
+A cost calculator for CSGO container unboxings - available at [casecalculator.app](https://www.casecalculator.app/)
 
 ![image](https://user-images.githubusercontent.com/53287407/236367403-8bd0382a-e0d4-4b43-aa83-8d3eacc5c62c.png)
 
