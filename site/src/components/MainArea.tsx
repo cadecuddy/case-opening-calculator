@@ -345,20 +345,6 @@ export const MainArea: React.FC<MainAreaProps> = () => {
         setActiveContainer={setActiveContainer}
       />
 
-      {/* <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
-        {sortedItems
-          ?.filter(
-            (item) =>
-              !selectedItems.map((s) => s.listing.name).includes(item.name)
-          )
-          .map((item) => (
-            <MemoizedCase
-              key={item.name}
-              {...item}
-              onSelect={() => handleItemSelection(item.name)}
-            />
-          ))}
-      </div> */}
       <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
         {sortedItems
           ?.slice(0, displayedItemsCount)
