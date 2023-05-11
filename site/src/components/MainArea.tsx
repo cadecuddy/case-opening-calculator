@@ -2,9 +2,9 @@
 import React from "react";
 import { api } from "y/utils/api";
 import { MemoizedCase } from "./Case";
-import { SelectedCases } from "./SelectedCases";
+import { SelectedItems } from "./SelectedItems";
 import { Controls } from "./Controls";
-import { UnboxingCost } from "./Unboxing";
+import { UnboxingCost } from "./CostDisplay";
 import { Listing } from "@prisma/client";
 import Loading from "./Loading";
 
@@ -282,7 +282,7 @@ export const MainArea: React.FC<MainAreaProps> = () => {
 
       {listings.data ? (
         <div className="my-8 flex flex-col-reverse space-y-4 lg:flex-row lg:items-start lg:justify-between lg:space-x-4 lg:space-y-0">
-          <SelectedCases
+          <SelectedItems
             cases={listings.data
               ?.filter((item) =>
                 selectedItems
@@ -320,7 +320,7 @@ export const MainArea: React.FC<MainAreaProps> = () => {
         </div>
       ) : (
         <div className="my-8 flex flex-col-reverse space-y-4 lg:flex-row lg:items-start lg:justify-between lg:space-x-4 lg:space-y-0">
-          <SelectedCases
+          <SelectedItems
             cases={[]}
             onCaseSelect={handleItemSelection}
             onQuantityChange={handleQuantityChange}

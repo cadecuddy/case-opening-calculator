@@ -2,13 +2,13 @@ import React from "react";
 import type { Listing } from "@prisma/client";
 import Case from "./Case";
 
-interface SelectedCasesProps {
+interface SelectedItems {
   cases: Listing[];
   onCaseSelect: (caseId: string) => void;
   onQuantityChange: (caseId: string, quantity: number) => void;
 }
 
-export const SelectedCases: React.FC<SelectedCasesProps> = ({
+export const SelectedItems: React.FC<SelectedItems> = ({
   cases,
   onCaseSelect,
   onQuantityChange,

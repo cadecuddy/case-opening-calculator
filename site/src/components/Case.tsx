@@ -41,7 +41,7 @@ export default function Case({
   };
 
   return (
-    <div className="bg-st flex h-full transform flex-col justify-between rounded-lg bg-steamDark p-4 font-extrabold shadow-lg transition duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:cursor-pointer hover:shadow-2xl">
+    <div className="flex transform flex-col justify-between rounded-lg bg-steamDark p-4 font-extrabold shadow-lg transition duration-300 ease-in-out hover:-translate-y-1 hover:scale-105 hover:cursor-pointer hover:shadow-2xl">
       <div onClick={onSelect}>
         <Image
           src={IMAGE_BASE + image}
