@@ -7,6 +7,7 @@ import { Controls } from "./Controls";
 import { UnboxingCost } from "./CostDisplay";
 import { Listing } from "@prisma/client";
 import Loading from "./Loading";
+import TextTransition, { presets } from "react-text-transition";
 
 interface MainAreaProps {}
 
@@ -24,6 +25,7 @@ export enum ContainerType {
 
 const KEY_COST_USD = 2.49;
 const LOAD_INCREMENT = 20;
+const phrases = ["case opening", "souvenir unboxing", "capsule opening"];
 
 export const MainArea: React.FC<MainAreaProps> = () => {
   const [displayedItemsCount, setDisplayedItemsCount] =
@@ -68,6 +70,11 @@ export const MainArea: React.FC<MainAreaProps> = () => {
     { listing: Listing; quantity: number }[]
   >([]);
   const [search, setSearch] = React.useState("");
+  const [index, setIndex] = React.useState(0);
+
+  const resetSelectedItems = () => {
+    setSelectedItems([]);
+  };
 
   const keys = React.useMemo(() => {
     if (!listings.data) {
@@ -256,15 +263,20 @@ export const MainArea: React.FC<MainAreaProps> = () => {
     });
   };
 
-  const resetSelectedItems = () => {
-    setSelectedItems([]);
-  };
+  React.useEffect(() => {
+    const intervalId = setInterval(() => setIndex((index) => index + 1), 3000);
+    return () => clearTimeout(intervalId);
+  }, []);
 
   return (
     <div className="container mx-auto -mt-8 max-w-7xl">
-      <h1 className="text-center text-3xl antialiased">
+      <h1 className="text-center text-2xl antialiased sm:text-3xl">
         Calculate the cost of your next{" "}
-        <span className="text-green-500">case opening</span>
+        <span className="text-green-500">
+          <TextTransition inline springConfig={presets.wobbly}>
+            {phrases[index % phrases.length]}
+          </TextTransition>
+        </span>
       </h1>
       <p className="text-center text-lg text-gray-500">
         Prices last updated:{" "}
@@ -280,59 +292,61 @@ export const MainArea: React.FC<MainAreaProps> = () => {
           : "loading..."}
       </p>
 
-      {listings.data ? (
-        <div className="my-8 flex flex-col-reverse space-y-4 lg:flex-row lg:items-start lg:justify-between lg:space-x-4 lg:space-y-0">
-          <SelectedItems
-            cases={listings.data
-              ?.filter((item) =>
-                selectedItems
-                  .map(({ listing }) => listing.name)
-                  .includes(item.name)
-              )
-              .sort(
-                (a, b) =>
-                  selectedItems.findIndex(
-                    ({ listing }) => listing.name === a.name
-                  ) -
-                  selectedItems.findIndex(
-                    ({ listing }) => listing.name === b.name
-                  )
-              )}
-            onCaseSelect={handleItemSelection}
-            onQuantityChange={handleQuantityChange}
-          />
-          <UnboxingCost
-            totalCost={totalCost}
-            keys={keys}
-            items={selectedItems.map((selectedItem) => {
-              const listingData = listings.data.find(
-                (item) => item.name === selectedItem.listing.name
-              );
-              return {
-                name: selectedItem.listing.name,
-                price: listingData?.price || 0,
-                quantity: selectedItem.quantity,
-                type: selectedItem.listing.type,
-              };
-            })}
-            onReset={resetSelectedItems}
-          />
-        </div>
-      ) : (
-        <div className="my-8 flex flex-col-reverse space-y-4 lg:flex-row lg:items-start lg:justify-between lg:space-x-4 lg:space-y-0">
-          <SelectedItems
-            cases={[]}
-            onCaseSelect={handleItemSelection}
-            onQuantityChange={handleQuantityChange}
-          />
-          <UnboxingCost
-            totalCost={totalCost}
-            keys={keys}
-            items={[]}
-            onReset={resetSelectedItems}
-          />
-        </div>
-      )}
+      <div className="my-8 flex flex-col-reverse space-y-4 lg:flex-row lg:items-start lg:justify-between lg:space-x-4 lg:space-y-0">
+        {listings.data ? (
+          <>
+            <SelectedItems
+              cases={listings.data
+                ?.filter((item) =>
+                  selectedItems
+                    .map(({ listing }) => listing.name)
+                    .includes(item.name)
+                )
+                .sort(
+                  (a, b) =>
+                    selectedItems.findIndex(
+                      ({ listing }) => listing.name === a.name
+                    ) -
+                    selectedItems.findIndex(
+                      ({ listing }) => listing.name === b.name
+                    )
+                )}
+              onCaseSelect={handleItemSelection}
+              onQuantityChange={handleQuantityChange}
+            />
+            <UnboxingCost
+              totalCost={totalCost}
+              keys={keys}
+              items={selectedItems.map((selectedItem) => {
+                const listingData = listings.data.find(
+                  (item) => item.name === selectedItem.listing.name
+                );
+                return {
+                  name: selectedItem.listing.name,
+                  price: listingData?.price || 0,
+                  quantity: selectedItem.quantity,
+                  type: selectedItem.listing.type,
+                };
+              })}
+              onReset={resetSelectedItems}
+            />
+          </>
+        ) : (
+          <>
+            <SelectedItems
+              cases={[]}
+              onCaseSelect={handleItemSelection}
+              onQuantityChange={handleQuantityChange}
+            />
+            <UnboxingCost
+              totalCost={totalCost}
+              keys={keys}
+              items={[]}
+              onReset={resetSelectedItems}
+            />
+          </>
+        )}
+      </div>
 
       <hr className="my-8" />
 

@@ -89,6 +89,12 @@ export const UnboxingCost: React.FC<UnboxingCostProps> = ({
             </g>
           </svg>
         </span>
+        <span className="float-right mr-1 inline align-middle text-base">
+          <select className="rounded-sm bg-steamMarket p-1 font-mono text-neutral-200">
+            <option value="USD">USD</option>
+            <option value="CAD">CAD</option>
+          </select>
+        </span>
       </h2>
 
       <p className="break-words pb-2 text-left text-2xl font-semibold text-green-500 sm:text-left">
