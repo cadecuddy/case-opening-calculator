@@ -25,7 +25,7 @@ export enum ContainerType {
 
 const KEY_COST_USD = 2.49;
 const LOAD_INCREMENT = 20;
-const phrases = ["case opening", "souvenir unboxing", "capsule opening"];
+const phrases = ["case", "souvenir", "capsule"];
 
 export const MainArea: React.FC<MainAreaProps> = () => {
   const [displayedItemsCount, setDisplayedItemsCount] =
@@ -273,10 +273,11 @@ export const MainArea: React.FC<MainAreaProps> = () => {
       <h1 className="text-center text-2xl antialiased sm:text-3xl">
         Calculate the cost of your next{" "}
         <span className="text-green-500">
-          <TextTransition inline springConfig={presets.wobbly}>
+          <TextTransition inline springConfig={presets.gentle}>
             {phrases[index % phrases.length]}
           </TextTransition>
-        </span>
+        </span>{" "}
+        opening
       </h1>
       <p className="text-center text-lg text-gray-500">
         Prices last updated:{" "}
