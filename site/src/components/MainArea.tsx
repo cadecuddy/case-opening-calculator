@@ -9,57 +9,26 @@ import { Listing } from "@prisma/client";
 import Loading from "./Loading";
 import TextTransition, { presets } from "react-text-transition";
 
+// Enums and constants
 interface MainAreaProps {}
-
 export enum SortingState {
   PriceDescending,
   PriceAscending,
   NameDescending,
 }
-
 export enum ContainerType {
   Case,
   Capsule,
   Package,
 }
-
 const KEY_COST_USD = 2.49;
 const LOAD_INCREMENT = 20;
 const phrases = ["case", "souvenir", "capsule"];
 
 export const MainArea: React.FC<MainAreaProps> = () => {
+  // State variables
   const [displayedItemsCount, setDisplayedItemsCount] =
     React.useState(LOAD_INCREMENT);
-  const loadMoreItems = () => {
-    setDisplayedItemsCount((prevCount) => prevCount + LOAD_INCREMENT * 2);
-  };
-
-  React.useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries: IntersectionObserverEntry[]) => {
-        if (entries[0] && entries[0].isIntersecting) {
-          loadMoreItems();
-        }
-      },
-      { threshold: 1 }
-    );
-
-    const target = document.getElementById("load-more-target");
-    if (target) {
-      observer.observe(target);
-    }
-
-    return () => {
-      if (target) {
-        observer.unobserve(target);
-      }
-    };
-  }, []);
-
-  const listings = api.listings.getListings.useQuery(undefined, {
-    refetchOnWindowFocus: false,
-  });
-
   const [activeContainer, setActiveContainer] = React.useState<ContainerType>(
     ContainerType.Case
   );
@@ -72,29 +41,12 @@ export const MainArea: React.FC<MainAreaProps> = () => {
   const [search, setSearch] = React.useState("");
   const [index, setIndex] = React.useState(0);
 
-  const resetSelectedItems = () => {
-    setSelectedItems([]);
-  };
+  // Data fetching
+  const listings = api.listings.getListings.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+  });
 
-  const keys = React.useMemo(() => {
-    if (!listings.data) {
-      return 0;
-    }
-
-    return selectedItems
-      .map((selectedItem) => {
-        if (selectedItem.listing.type == "CASE") {
-          return selectedItem.quantity;
-        } else {
-          return 0;
-        }
-      })
-      .reduce((acc, cur) => acc + cur, 0);
-  }, [listings.data, selectedItems]);
-
-  console.log(selectedItems);
-
-  // The total cost of the selected cases
+  // Memozation and calculations
   const totalCost = React.useMemo(() => {
     if (!listings.data) {
       return 0;
@@ -118,8 +70,6 @@ export const MainArea: React.FC<MainAreaProps> = () => {
       })
       .reduce((acc, cur) => acc + cur, 0);
   }, [listings.data, selectedItems]);
-
-  // get sorted and filtered cases
   const sortedItems = React.useMemo(() => {
     let data: Listing[] = [];
 
@@ -158,7 +108,56 @@ export const MainArea: React.FC<MainAreaProps> = () => {
         return sortedData;
     }
   }, [listings.data, sortingState, search, activeContainer]);
+  const keys = React.useMemo(() => {
+    if (!listings.data) {
+      return 0;
+    }
 
+    return selectedItems
+      .map((selectedItem) => {
+        if (selectedItem.listing.type == "CASE") {
+          return selectedItem.quantity;
+        } else {
+          return 0;
+        }
+      })
+      .reduce((acc, cur) => acc + cur, 0);
+  }, [listings.data, selectedItems]);
+
+  // UseEffect hooks
+  React.useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries: IntersectionObserverEntry[]) => {
+        if (entries[0] && entries[0].isIntersecting) {
+          loadMoreItems();
+        }
+      },
+      { threshold: 1 }
+    );
+
+    const target = document.getElementById("load-more-target");
+    if (target) {
+      observer.observe(target);
+    }
+
+    return () => {
+      if (target) {
+        observer.unobserve(target);
+      }
+    };
+  }, []);
+  React.useEffect(() => {
+    const intervalId = setInterval(() => setIndex((index) => index + 1), 3000);
+    return () => clearTimeout(intervalId);
+  }, []);
+
+  // Functions
+  const loadMoreItems = () => {
+    setDisplayedItemsCount((prevCount) => prevCount + LOAD_INCREMENT * 2);
+  };
+  const resetSelectedItems = () => {
+    setSelectedItems([]);
+  };
   const handleItemSelection = (itemId: string) => {
     setSelectedItems((prevSelectedItems) => {
       const caseIndex = prevSelectedItems.findIndex(
@@ -181,8 +180,6 @@ export const MainArea: React.FC<MainAreaProps> = () => {
       }
     });
   };
-
-  // toggle between sorting states
   const toggleSorting = () => {
     switch (sortingState) {
       case SortingState.PriceDescending:
@@ -196,7 +193,6 @@ export const MainArea: React.FC<MainAreaProps> = () => {
         break;
     }
   };
-
   const getSortingIcon = () => {
     switch (sortingState) {
       case SortingState.PriceDescending:
@@ -262,11 +258,6 @@ export const MainArea: React.FC<MainAreaProps> = () => {
       return prevSelectedItems;
     });
   };
-
-  React.useEffect(() => {
-    const intervalId = setInterval(() => setIndex((index) => index + 1), 3000);
-    return () => clearTimeout(intervalId);
-  }, []);
 
   return (
     <div className="container mx-auto -mt-8 max-w-7xl">
