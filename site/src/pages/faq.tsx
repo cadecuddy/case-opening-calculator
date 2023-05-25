@@ -32,12 +32,18 @@ const faq: React.FC = () => {
           </div>
           <div>
             <h2 className="text-2xl font-semibold text-slate-400">
-              Where are case prices sourced from?
+              Where are the prices sourced from?
             </h2>
             <p className="leading-7 text-neutral-50">
-              Yes. Case prices are fetched directly from the Steam marketplace
-              and are updated every 15 minutes or so
+              They&apos;re fetched directly from the Steam marketplace and are
+              updated every 15 minutes or so
             </p>
+          </div>
+          <div>
+            <h2 className="text-2xl font-semibold text-slate-400">
+              How often are currency exchange rates updated?
+            </h2>
+            <p className="leading-7 text-neutral-50">Every 24 hours.</p>
           </div>
           <div>
             <h2 className="text-2xl font-semibold text-slate-400">
