@@ -14,15 +14,35 @@ interface UnboxingCostProps {
   onReset: () => void;
 }
 
-const CurrencyDisplay: React.FC<{ amount: number }> = ({ amount }) => (
+export interface ExchangeRateResponse {
+  result: string;
+  provider: string;
+  documentation: string;
+  terms_of_use: string;
+  time_last_update_unix: number;
+  time_last_update_utc: string;
+  time_next_update_unix: number;
+  time_next_update_utc: string;
+  base_code: string;
+  rates: {
+    [key: string]: number;
+  };
+}
+
+const CurrencyDisplay: React.FC<{ amount: number; currency: string }> = ({
+  amount,
+  currency = "USD",
+}) => (
   <div className="w-1/2 rounded-md bg-steamDark p-1 text-center text-neutral-200">
-    $
-    {amount.toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}
+    {Intl.NumberFormat(undefined, {
+      style: "currency",
+      currency: currency,
+    }).format(amount)}
   </div>
 );
+
+const KEY_COST_USD = 2.49;
+const US_SALES_TAX = 0.0712;
 
 export const UnboxingCost: React.FC<UnboxingCostProps> = ({
   totalCost,
@@ -30,23 +50,28 @@ export const UnboxingCost: React.FC<UnboxingCostProps> = ({
   items,
   onReset,
 }) => {
-  const KEY_COST_USD = 2.49;
-  const SALES_TAX = 0.0712;
   const [expanded, setExpanded] = useState(false);
   const [applySalesTax, setApplySalesTax] = useState(false);
+  const [selectedCurrency, setSelectedCurrency] = useState<string>("USD");
+  const [exchangeRates, setExchangeRates] = useState<{ [key: string]: number }>(
+    {}
+  );
 
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
-
-  const handleSalesTaxCheck = () => {
-    setApplySalesTax(!applySalesTax);
-  };
-
-  const salesTaxAmount = applySalesTax ? keys * KEY_COST_USD * SALES_TAX : 0;
-  const adjustedKeyCost = keys * KEY_COST_USD + salesTaxAmount;
-  const adjustedTotalCost = totalCost + salesTaxAmount;
-
+  const salesTaxAmount = useMemo(() => {
+    return applySalesTax ? keys * KEY_COST_USD * US_SALES_TAX : 0;
+  }, [applySalesTax, keys]);
+  const adjustedKeyCost = useMemo(() => {
+    return (
+      keys * KEY_COST_USD * (exchangeRates[selectedCurrency] || 1) +
+      salesTaxAmount
+    ).toFixed(2);
+  }, [keys, salesTaxAmount, exchangeRates, selectedCurrency]);
+  const adjustedTotalCost = useMemo(() => {
+    return (
+      totalCost * (exchangeRates[selectedCurrency] || 1) +
+      salesTaxAmount
+    ).toFixed(2);
+  }, [totalCost, salesTaxAmount, exchangeRates, selectedCurrency]);
   const sortedItems = useMemo(
     () =>
       items.sort(
@@ -54,6 +79,67 @@ export const UnboxingCost: React.FC<UnboxingCostProps> = ({
       ),
     [items]
   );
+
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
+  const handleSalesTaxCheck = () => {
+    setApplySalesTax(!applySalesTax);
+  };
+
+  // check local storage for currency exchange rates and selected currency
+  // if not found, fetch from api and store in local storage
+  // if found, check if it's been more than 24 hours since last fetch
+  // if so, fetch from api and store in local storage
+  React.useEffect(() => {
+    const fetchExchangeRates = async () => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const response = await fetch(
+        "https://open.er-api.com/v6/latest/USD"
+      ).then((res) => res.json());
+      if (response) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const responseObj: ExchangeRateResponse = JSON.parse(
+          JSON.stringify(response)
+        );
+        localStorage.setItem("exchangeRates", JSON.stringify(responseObj));
+        setExchangeRates(responseObj.rates);
+      }
+    };
+
+    const storedExchangeRates = localStorage.getItem("exchangeRates");
+    if (!storedExchangeRates) {
+      fetchExchangeRates().catch((err) => {
+        console.error(err);
+      });
+
+      localStorage.setItem("selectedCurrency", "USD");
+    } else {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const parsedExchangeRates: ExchangeRateResponse =
+        JSON.parse(storedExchangeRates);
+      const lastUpdate = parsedExchangeRates.time_last_update_unix;
+      const now = Math.floor(Date.now() / 1000);
+      const twentyFourHours = 86400;
+      if (now - lastUpdate > twentyFourHours) {
+        fetchExchangeRates().catch((err) => console.error(err));
+      }
+      setExchangeRates(parsedExchangeRates.rates);
+    }
+
+    const storedSelectedCurrency = localStorage.getItem("selectedCurrency");
+    if (storedSelectedCurrency) {
+      setSelectedCurrency(storedSelectedCurrency);
+    }
+  }, []);
+
+  const handleCurrencyChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const newSelectedCurrency = event.target.value;
+    setSelectedCurrency(newSelectedCurrency);
+    localStorage.setItem("selectedCurrency", newSelectedCurrency);
+  };
 
   return (
     <div className="mx-auto my-4 w-full rounded-md bg-slate-700 p-4 text-left shadow-md sm:max-w-xs">
@@ -90,19 +176,26 @@ export const UnboxingCost: React.FC<UnboxingCostProps> = ({
           </svg>
         </span>
         <span className="float-right mr-1 inline align-middle text-base">
-          <select className="rounded-sm bg-steamMarket p-1 font-mono text-neutral-200">
-            <option value="USD">USD</option>
-            <option value="CAD">CAD</option>
+          <select
+            value={selectedCurrency}
+            onChange={handleCurrencyChange}
+            className="rounded-sm bg-steamMarket p-1 font-mono text-neutral-200"
+          >
+            {exchangeRates &&
+              Object.keys(exchangeRates).map((currency) => (
+                <option value={currency} key={currency}>
+                  {currency}
+                </option>
+              ))}
           </select>
         </span>
       </h2>
 
       <p className="break-words pb-2 text-left text-2xl font-semibold text-green-500 sm:text-left">
-        $
-        {adjustedTotalCost.toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}
+        {Intl.NumberFormat(undefined, {
+          style: "currency",
+          currency: selectedCurrency,
+        }).format(adjustedTotalCost as unknown as number)}
       </p>
       {items.length > 0 && (
         <>
@@ -113,7 +206,14 @@ export const UnboxingCost: React.FC<UnboxingCostProps> = ({
             >
               {expanded ? "−" : "+"} containers
             </label>
-            <CurrencyDisplay amount={totalCost - keys * KEY_COST_USD} />
+            <CurrencyDisplay
+              currency={selectedCurrency}
+              amount={
+                // use memo
+                (adjustedTotalCost as unknown as number) -
+                (adjustedKeyCost as unknown as number)
+              }
+            />
           </div>
 
           {expanded && (
@@ -127,13 +227,13 @@ export const UnboxingCost: React.FC<UnboxingCostProps> = ({
                     {caseItem.quantity} × {caseItem.name}
                   </span>
                   <span className="text-green-500">
-                    $
-                    {(caseItem.price * caseItem.quantity).toLocaleString(
-                      undefined,
-                      {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      }
+                    {Intl.NumberFormat(undefined, {
+                      style: "currency",
+                      currency: selectedCurrency,
+                    }).format(
+                      caseItem.price *
+                        caseItem.quantity *
+                        (exchangeRates[selectedCurrency] || 1)
                     )}
                   </span>
                 </div>
@@ -144,7 +244,10 @@ export const UnboxingCost: React.FC<UnboxingCostProps> = ({
             <label className="w-28 font-semibold text-neutral-200">
               {keys === 1 ? "key" : "keys"}:
             </label>
-            <CurrencyDisplay amount={adjustedKeyCost} />
+            <CurrencyDisplay
+              currency={selectedCurrency}
+              amount={adjustedKeyCost as unknown as number}
+            />
           </div>
           <div className="mt-2 flex items-center justify-center sm:justify-start">
             <input

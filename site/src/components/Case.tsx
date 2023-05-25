@@ -2,6 +2,7 @@ import Image from "next/image";
 import React from "react";
 import Link from "next/link";
 import { useState } from "react";
+import { ExchangeRateResponse } from "./CostDisplay";
 
 type Props = {
   name: string;
@@ -23,10 +24,28 @@ export default function Case({
   showQuantityInput = false,
   onQuantityChange,
 }: Props) {
+  const [convertedPrice, setConvertedPrice] = useState<number>(price);
+  const [selectedCurrency, setSelectedCurrency] = useState<string>("USD");
   const [, setQuantity] = useState<number>(1);
   const [inputValue, setInputValue] = useState<string>("1");
   const IMAGE_BASE =
     "https://community.cloudflare.steamstatic.com/economy/image/";
+
+  React.useEffect(() => {
+    const selectedCurrency = localStorage.getItem("selectedCurrency");
+    setSelectedCurrency(selectedCurrency || "USD");
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const exchangeRates: ExchangeRateResponse = JSON.parse(
+      localStorage.getItem("exchangeRates") || "{}"
+    );
+
+    if (selectedCurrency && exchangeRates) {
+      const exchangeRate = exchangeRates.rates[selectedCurrency];
+      setConvertedPrice(
+        (price * (exchangeRate || 1)).toFixed(2) as unknown as number
+      );
+    }
+  }, [price]);
 
   const handleQuantityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -65,7 +84,10 @@ export default function Case({
                 width={16}
                 height={16}
               />
-              ${price.toFixed(2)}
+              {Intl.NumberFormat(undefined, {
+                style: "currency",
+                currency: selectedCurrency,
+              }).format(convertedPrice as unknown as number)}
             </span>
           </Link>
         </p>
