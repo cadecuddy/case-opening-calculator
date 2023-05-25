@@ -11,33 +11,13 @@ const faq: React.FC = () => {
         <div className="max-w-2xl space-y-8">
           <div>
             <h2 className="text-2xl font-semibold text-slate-400">
-              Will there be support for other currencies?
-            </h2>
-            <p className="leading-7 text-neutral-50">
-              I&apos;m working on adding support for other currencies. This is a
-              bit difficult since it goes beyond just converting the market
-              prices to the desired currency. Case keys cost strangely different
-              amounts in different countries, varying based on both government
-              regulations and conversion rates.
-            </p>
-            <br />
-            <p className="italic leading-7 text-green-500">
-              TL;DR: I&apos;m working on it, might just convert USD to the
-              desired currency for now.
-            </p>
-          </div>
-          <div>
-            <h2 className="text-2xl font-semibold text-slate-400">
               How does the cost calculator work?
             </h2>
-            <p className="leading-7 text-neutral-50">
+            <p className="leading-7 text-neutral-200">
               Total Cost ={" "}
               <span className="text-green-500">
-                (case price + key price) * quantity
+                (case price + key price) • case quantity
               </span>
-            </p>
-            <p className="leading-7 text-neutral-50">
-              Repeat for each case, add up the total.
             </p>
           </div>
           <div>
@@ -45,20 +25,25 @@ const faq: React.FC = () => {
               How do I use the cost calculator?
             </h2>
             <p className="leading-7 text-neutral-50">
-              Select (click on the case image) cases from the main page and
-              enter the amount of each case you want to unbox. The total cost
-              will be displayed along with a breakdown of other costs.
+              Select cases from the main page and enter the amount of each case
+              you want to unbox. The total cost will be calculated and
+              displayed.
             </p>
           </div>
           <div>
             <h2 className="text-2xl font-semibold text-slate-400">
-              Are the case prices accurate?
+              Where are the prices sourced from?
             </h2>
             <p className="leading-7 text-neutral-50">
-              Yes. Case prices are fetched directly from the Steam marketplace
-              and are updated every 15 minutes (to ward off their unclear rate
-              limits).
+              They&apos;re fetched directly from the Steam marketplace and are
+              updated every 15 minutes or so
             </p>
+          </div>
+          <div>
+            <h2 className="text-2xl font-semibold text-slate-400">
+              How often are currency exchange rates updated?
+            </h2>
+            <p className="leading-7 text-neutral-50">Every 24 hours.</p>
           </div>
           <div>
             <h2 className="text-2xl font-semibold text-slate-400">
@@ -80,10 +65,6 @@ const faq: React.FC = () => {
               certainly not necessary.
             </p>
             <br />
-            <p className="leading-7 text-green-500">
-              Some will be liquidated to cover server costs, others will be used
-              by me in comp games :)
-            </p>
           </div>
         </div>
       </div>
