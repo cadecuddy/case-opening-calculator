@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 import React from "react";
 import { api } from "y/utils/api";
-import { MemoizedCase } from "./Case";
+import { MemoizedCase } from "./Case/Case";
 import { SelectedItems } from "./SelectedItems";
 import { Controls } from "./Controls";
 import { UnboxingCost } from "./CostDisplay";

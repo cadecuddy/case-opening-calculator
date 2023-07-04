@@ -1,6 +1,6 @@
 import React from "react";
 import type { Listing } from "@prisma/client";
-import Case from "./Case";
+import Case from "./Case/Case";
 
 interface SelectedItems {
   cases: Listing[];

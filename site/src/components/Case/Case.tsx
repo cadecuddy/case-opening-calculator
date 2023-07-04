@@ -2,7 +2,8 @@ import Image from "next/image";
 import React from "react";
 import Link from "next/link";
 import { useState } from "react";
-import { ExchangeRateResponse } from "./CostDisplay";
+import { ExchangeRateResponse } from "../CostDisplay";
+import InfoBar from "./InfoBar";
 
 type Props = {
   name: string;
@@ -74,23 +75,13 @@ export default function Case({
         </div>
       </div>
       <div>
-        <p className="bottom-0 text-center font-mono text-xl text-neutral-300 antialiased">
-          <Link href={url} target="_blank">
-            <span className="bottom-0 hover:underline">
-              <Image
-                className="mr-2 inline-block rounded-sm"
-                src="/steam.svg"
-                alt="Steam"
-                width={16}
-                height={16}
-              />
-              {Intl.NumberFormat(undefined, {
-                style: "currency",
-                currency: selectedCurrency,
-              }).format(convertedPrice as unknown as number)}
-            </span>
-          </Link>
-        </p>
+        <InfoBar
+          selectedCurrency={selectedCurrency}
+          price={convertedPrice}
+          url={url}
+          name={name}
+          image={IMAGE_BASE + image}
+        />
         {showQuantityInput && (
           <div className="flex justify-center pt-2">
             <input
