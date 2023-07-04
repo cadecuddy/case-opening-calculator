@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
     provider = "prisma-client-js"
 }
@@ -11,17 +8,21 @@ datasource db {
     relationMode = "prisma"
 }
 
-// datasource db {
-//     provider = "sqlite"
-//     url      = env("DATABASE_URL")
-// }
-
 model Listing {
-    name        String   @id
-    price       Float
-    listings    Int
-    image       String
-    url         String
-    type        String
-    lastUpdated DateTime
+    name        String    @id @db.VarChar(255)
+    price       Float?    @db.Float
+    listings    Int?
+    image       String?   @db.Text
+    url         String?   @db.Text
+    type        String?   @db.VarChar(255)
+    lastUpdated DateTime? @db.Timestamp(0)
+}
+
+model PriceHistory {
+    id       Int       @id @default(autoincrement())
+    name     String?   @db.VarChar(255)
+    price    Float?    @db.Float
+    listings Int?
+    type     String?   @db.VarChar(255)
+    date     DateTime? @default(now()) @db.Timestamp(0)
 }
