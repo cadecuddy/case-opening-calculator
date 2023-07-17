@@ -9,7 +9,9 @@ A cost calculator for CSGO container unboxings - available at [casecalculator.ap
 - [x] Container filtering
 - [x] Sorting options (Price, Alphabetical)
 - [x] Search functionality
-- [ ] International currency support
+- [x] International currency support
+- [ ] Container Price History
+- [ ] Container Collection Info
 
 ## Stack 📚
 This monorepo contains 2 directories:
