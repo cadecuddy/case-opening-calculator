@@ -270,19 +270,25 @@ export const MainArea: React.FC<MainAreaProps> = () => {
         </span>{" "}
         opening
       </h1>
-      <p className="text-center text-lg text-gray-500">
-        Prices last updated:{" "}
-        {listings.data && listings.data[0]
-          ? listings.data?.[0].lastUpdated.getTime() - new Date().getTime() > 0
-            ? "just now"
-            : `${Math.floor(
-                (new Date().getTime() -
-                  listings.data?.[0].lastUpdated.getTime()) /
-                  1000 /
-                  60
-              )} minutes ago`
-          : "loading..."}
-      </p>
+      <div className="text-center">
+        <p className="text-lg text-gray-500">
+          Prices last updated:{" "}
+          {listings.data && listings.data[0]
+            ? listings.data?.[0].lastUpdated.getTime() - new Date().getTime() >
+              0
+              ? "just now"
+              : `${Math.floor(
+                  (new Date().getTime() -
+                    listings.data?.[0].lastUpdated.getTime()) /
+                    1000 /
+                    60
+                )} minutes ago`
+            : "loading..."}
+        </p>
+        <p className="text-sm italic text-gray-400">
+          New features later this month!{" "}
+        </p>
+      </div>
 
       <div className="my-8 flex flex-col-reverse space-y-4 lg:flex-row lg:items-start lg:justify-between lg:space-x-4 lg:space-y-0">
         {listings.data ? (
