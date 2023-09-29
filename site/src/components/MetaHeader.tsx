@@ -9,9 +9,9 @@ interface MetaHeaderProps {
 }
 
 export const MetaHeader: React.FC<MetaHeaderProps> = ({
-  title = "CS:GO Case Opening Calculator",
-  description = "Calculate the cost of a CS:GO unboxing. Select from cases, sticker capsules, and souvenir packages - all with real-time prices in 160+ different currencies.",
-  keywords = "CSGO, case, opening, calculator, budget, tool, csgo unboxing calculator, unboxing, CS:GO, cs2, roi, profit calculator, profit",
+  title = "CS2 Case Opening Calculator",
+  description = "Calculate the cost of a CS2 unboxing. Select from cases, sticker capsules, and souvenir packages - all with real-time prices in 160+ different currencies.",
+  keywords = "CSGO, case, opening, calculator, budget, tool, csgo unboxing calculator, unboxing, CS:GO, cs2, counter strike, roi, profit calculator, profit",
   ogImage = "/ogimg.png",
 }) => {
   return (
@@ -28,10 +28,10 @@ export const MetaHeader: React.FC<MetaHeaderProps> = ({
       <meta name="twitter:card" content="summary_large_image" />
       <meta property="twitter:domain" content="casecalculator.app" />
       <meta property="twitter:url" content="https://www.casecalculator.app/" />
-      <meta name="twitter:title" content="CS:GO Case Opening Calculator" />
+      <meta name="twitter:title" content="CS2 Case Opening Calculator" />
       <meta
         name="twitter:description"
-        content="Calculate the cost of a CS:GO unboxing. Select from cases, sticker capsules, and souvenir packages - all with real-time prices."
+        content="Calculate the cost of a CS2 unboxing. Select from cases, sticker capsules, and souvenir packages - all with real-time prices."
       />
       <meta
         name="twitter:image"
