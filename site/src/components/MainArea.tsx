@@ -286,7 +286,7 @@ export const MainArea: React.FC<MainAreaProps> = () => {
             : "loading..."}
         </p>
         <p className="text-sm italic text-gray-400">
-          New features later this month!{" "}
+          New features later this year!{" "}
         </p>
       </div>
 
