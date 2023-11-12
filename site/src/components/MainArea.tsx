@@ -8,6 +8,7 @@ import { UnboxingCost } from "./CostDisplay";
 import { Listing } from "@prisma/client";
 import Loading from "./Loading";
 import TextTransition, { presets } from "react-text-transition";
+import Link from "next/link";
 
 // Enums and constants
 interface MainAreaProps {}
@@ -261,6 +262,20 @@ export const MainArea: React.FC<MainAreaProps> = () => {
 
   return (
     <div className="container mx-auto -mt-8 max-w-7xl">
+      <div className="mb-4 flex justify-center">
+        <Link
+          href="https://skinport.com/r/casecalc"
+          target="_blank"
+          className="inline-block"
+        >
+          <img
+            src="/sp.webp"
+            alt="Donate with PayPal"
+            // center image
+            width={600}
+          />
+        </Link>
+      </div>
       <h1 className="text-center text-2xl antialiased sm:text-3xl">
         Calculate the cost of your next{" "}
         <span className="text-green-500">
@@ -284,9 +299,6 @@ export const MainArea: React.FC<MainAreaProps> = () => {
                     60
                 )} minutes ago`
             : "loading..."}
-        </p>
-        <p className="text-sm italic text-gray-400">
-          New features later this year!{" "}
         </p>
       </div>
 
