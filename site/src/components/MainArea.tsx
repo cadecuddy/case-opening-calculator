@@ -9,6 +9,7 @@ import { Listing } from "@prisma/client";
 import Loading from "./Loading";
 import TextTransition, { presets } from "react-text-transition";
 import Link from "next/link";
+import Image from "next/image";
 
 // Enums and constants
 interface MainAreaProps {}
@@ -268,12 +269,7 @@ export const MainArea: React.FC<MainAreaProps> = () => {
           target="_blank"
           className="inline-block"
         >
-          <img
-            src="/sp.webp"
-            alt="Donate with PayPal"
-            // center image
-            width={600}
-          />
+          <Image src="/sp.webp" alt="skinport" width={600} />
         </Link>
       </div>
       <h1 className="text-center text-2xl antialiased sm:text-3xl">
