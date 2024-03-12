@@ -269,7 +269,7 @@ export const MainArea: React.FC<MainAreaProps> = () => {
           target="_blank"
           className="inline-block"
         >
-          <Image src="/sp.webp" alt="skinport" width={600} />
+          <Image src="/sp.webp" alt="skinport" width={600} height={200} />
         </Link>
       </div>
       <h1 className="text-center text-2xl antialiased sm:text-3xl">
