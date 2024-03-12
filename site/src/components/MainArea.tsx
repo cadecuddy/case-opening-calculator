@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { api } from "y/utils/api";
 import { MemoizedCase } from "./Case";
 import { SelectedItems } from "./SelectedItems";
@@ -10,10 +10,10 @@ import Loading from "./Loading";
 import TextTransition, { presets } from "react-text-transition";
 import Link from "next/link";
 import Image from "next/image";
-import { getSortingIcon } from "y/utils/utils";
+import { getSortingIcon, toggleSorting } from "y/utils/sorting";
 import RotatingText from "./RotatingText";
+import { KEY_COST_USD, LOAD_INCREMENT } from "y/utils/constants";
 
-// Enums and constants
 export enum SortingState {
   PriceDescending,
   PriceAscending,
@@ -26,31 +26,28 @@ export enum ContainerType {
   Package,
 }
 
-const KEY_COST_USD = 2.49;
-const LOAD_INCREMENT = 20;
-
 export function MainArea() {
-  // State variables
+  // == State ==
   const [displayedItemsCount, setDisplayedItemsCount] =
-    React.useState(LOAD_INCREMENT);
-  const [activeContainer, setActiveContainer] = React.useState<ContainerType>(
+    useState(LOAD_INCREMENT);
+  const [activeContainer, setActiveContainer] = useState<ContainerType>(
     ContainerType.Case
   );
-  const [sortingState, setSortingState] = React.useState<SortingState>(
+  const [sortingState, setSortingState] = useState<SortingState>(
     SortingState.PriceAscending
   );
-  const [selectedItems, setSelectedItems] = React.useState<
+  const [selectedItems, setSelectedItems] = useState<
     { listing: Listing; quantity: number }[]
   >([]);
-  const [search, setSearch] = React.useState("");
+  const [search, setSearch] = useState("");
 
-  // Data fetching
+  // == Data fetching ==
   const listings = api.listings.getListings.useQuery(undefined, {
     refetchOnWindowFocus: false,
   });
 
-  // Memozation and calculations
-  const totalCost = React.useMemo(() => {
+  // == Memozation and calculations ==
+  const totalCost = useMemo(() => {
     if (!listings.data) {
       return 0;
     }
@@ -73,9 +70,10 @@ export function MainArea() {
       })
       .reduce((acc, cur) => acc + cur, 0);
   }, [listings.data, selectedItems]);
-  const sortedItems = React.useMemo(() => {
+  const sortedItems = useMemo(() => {
     let data: Listing[] = [];
 
+    // filter by container
     if (listings?.data) {
       switch (activeContainer) {
         case ContainerType.Case:
@@ -111,7 +109,8 @@ export function MainArea() {
         return sortedData;
     }
   }, [listings.data, sortingState, search, activeContainer]);
-  const keys = React.useMemo(() => {
+
+  const keys = useMemo(() => {
     if (!listings.data) {
       return 0;
     }
@@ -127,8 +126,16 @@ export function MainArea() {
       .reduce((acc, cur) => acc + cur, 0);
   }, [listings.data, selectedItems]);
 
-  // UseEffect hooks
-  React.useEffect(() => {
+  const timeSince = Math.floor(
+    (new Date().getTime() -
+      new Date(listings.data?.[0]?.lastUpdated || "").getTime()) /
+      1000 /
+      60
+  );
+
+  // == HOOKS ==
+  // Sets up intersection oberserver to load more cases as user scrolls down
+  useEffect(() => {
     const observer = new IntersectionObserver(
       (entries: IntersectionObserverEntry[]) => {
         if (entries[0] && entries[0].isIntersecting) {
@@ -150,13 +157,15 @@ export function MainArea() {
     };
   }, []);
 
-  // Functions
+  // == Functions ==
   const loadMoreItems = () => {
     setDisplayedItemsCount((prevCount) => prevCount + LOAD_INCREMENT * 2);
   };
+
   const resetSelectedItems = () => {
     setSelectedItems([]);
   };
+
   const handleItemSelection = (itemId: string) => {
     setSelectedItems((prevSelectedItems) => {
       const caseIndex = prevSelectedItems.findIndex(
@@ -178,20 +187,6 @@ export function MainArea() {
         }
       }
     });
-  };
-
-  const toggleSorting = () => {
-    switch (sortingState) {
-      case SortingState.PriceDescending:
-        setSortingState(SortingState.PriceAscending);
-        break;
-      case SortingState.PriceAscending:
-        setSortingState(SortingState.NameDescending);
-        break;
-      case SortingState.NameDescending:
-        setSortingState(SortingState.PriceDescending);
-        break;
-    }
   };
 
   const handleQuantityChange = (itemId: string, quantity: number) => {
@@ -228,86 +223,64 @@ export function MainArea() {
         <p className="text-lg text-gray-500">
           Prices last updated:{" "}
           {listings.data && listings.data[0]
-            ? listings.data?.[0].lastUpdated.getTime() - new Date().getTime() >
-              0
-              ? "just now"
-              : `${Math.floor(
-                  (new Date().getTime() -
-                    listings.data?.[0].lastUpdated.getTime()) /
-                    1000 /
-                    60
-                )} minutes ago`
+            ? `${timeSince} minutes ago`
             : "loading..."}
         </p>
       </div>
-
       <div className="my-8 flex flex-col-reverse space-y-4 lg:flex-row lg:items-start lg:justify-between lg:space-x-4 lg:space-y-0">
-        {listings.data ? (
-          <>
-            <SelectedItems
-              cases={listings.data
-                ?.filter((item) =>
-                  selectedItems
-                    .map(({ listing }) => listing.name)
-                    .includes(item.name)
-                )
-                .sort(
-                  (a, b) =>
-                    selectedItems.findIndex(
-                      ({ listing }) => listing.name === a.name
-                    ) -
-                    selectedItems.findIndex(
-                      ({ listing }) => listing.name === b.name
-                    )
-                )}
-              onCaseSelect={handleItemSelection}
-              onQuantityChange={handleQuantityChange}
-            />
-            <UnboxingCost
-              totalCost={totalCost}
-              keys={keys}
-              items={selectedItems.map((selectedItem) => {
-                const listingData = listings.data.find(
-                  (item) => item.name === selectedItem.listing.name
-                );
-                return {
-                  name: selectedItem.listing.name,
-                  price: listingData?.price || 0,
-                  quantity: selectedItem.quantity,
-                  type: selectedItem.listing.type,
-                };
-              })}
-              onReset={resetSelectedItems}
-            />
-          </>
-        ) : (
-          <>
-            <SelectedItems
-              cases={[]}
-              onCaseSelect={handleItemSelection}
-              onQuantityChange={handleQuantityChange}
-            />
-            <UnboxingCost
-              totalCost={totalCost}
-              keys={keys}
-              items={[]}
-              onReset={resetSelectedItems}
-            />
-          </>
-        )}
+        <SelectedItems
+          cases={
+            listings.data
+              ? listings.data
+                  ?.filter((item) =>
+                    selectedItems
+                      .map(({ listing }) => listing.name)
+                      .includes(item.name)
+                  )
+                  .sort(
+                    (a, b) =>
+                      selectedItems.findIndex(
+                        ({ listing }) => listing.name === a.name
+                      ) -
+                      selectedItems.findIndex(
+                        ({ listing }) => listing.name === b.name
+                      )
+                  )
+              : []
+          }
+          onCaseSelect={handleItemSelection}
+          onQuantityChange={handleQuantityChange}
+        />
+        <UnboxingCost
+          totalCost={totalCost}
+          keys={keys}
+          items={
+            listings.data
+              ? selectedItems.map((selectedItem) => {
+                  const listingData = listings.data.find(
+                    (item) => item.name === selectedItem.listing.name
+                  );
+                  return {
+                    name: selectedItem.listing.name,
+                    price: listingData?.price || 0,
+                    quantity: selectedItem.quantity,
+                    type: selectedItem.listing.type,
+                  };
+                })
+              : []
+          }
+          onReset={resetSelectedItems}
+        />
       </div>
-
       <hr className="my-8" />
-
       <Controls
         search={search}
         setSearch={setSearch}
         sortingState={sortingState}
-        toggleSorting={toggleSorting}
+        toggleSorting={() => toggleSorting(sortingState, setSortingState)}
         getSortingIcon={() => getSortingIcon(sortingState)}
         setActiveContainer={setActiveContainer}
       />
-
       {sortedItems && (
         <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
           {sortedItems
@@ -326,12 +299,7 @@ export function MainArea() {
           <div id="load-more-target" className="h-0 w-full"></div>
         </div>
       )}
-
-      {sortedItems.length == 0 && (
-        <div className="flex items-center justify-center">
-          <Loading />
-        </div>
-      )}
+      {listings.isLoading && <Loading />}
     </div>
   );
 }
