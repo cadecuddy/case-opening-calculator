@@ -152,20 +152,20 @@ export const UnboxingCost: React.FC<UnboxingCostProps> = ({
             fill="#FFFFFF"
             className="float-right ml-1 inline-block h-6 w-6 align-middle text-white hover:cursor-pointer"
           >
-            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
             <g
               id="SVGRepo_tracerCarrier"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></g>
             <g id="SVGRepo_iconCarrier">
               {" "}
               <g
                 fill="none"
-                fill-rule="evenodd"
+                fillRule="evenodd"
                 stroke="#FFFFFF"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 transform="matrix(0 1 1 0 2.5 2.5)"
               >
                 {" "}
