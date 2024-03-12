@@ -11,7 +11,7 @@ interface MetaHeaderProps {
 export const MetaHeader: React.FC<MetaHeaderProps> = ({
   title = "CS2 Case Opening Calculator",
   description = "Calculate the cost of a CS2 unboxing. Select from cases, sticker capsules, and souvenir packages - all with real-time prices in 160+ different currencies.",
-  keywords = "CSGO, case, opening, calculator, budget, tool, csgo unboxing calculator, unboxing, CS:GO, cs2, counter strike, roi, profit calculator, profit",
+  keywords = "CSGO, case, opening, calculator, budget, tool, csgo unboxing calculator, unboxing, CS:GO, cs2, counter strike, roi, profit calculator, profit, simulator, cs2 case, cs2 case simulator",
   ogImage = "/ogimg.png",
 }) => {
   return (
