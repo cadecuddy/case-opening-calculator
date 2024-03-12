@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { SortingState } from "y/components/MainArea";
 
 export function toggleSorting(
