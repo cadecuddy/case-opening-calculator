@@ -1,4 +1,21 @@
-import { SortingState } from "y/components/MainArea"
+import { SortingState } from "y/components/MainArea";
+
+export function toggleSorting(
+  sortingState: SortingState,
+  setSortingState: any
+) {
+  switch (sortingState) {
+    case SortingState.PriceDescending:
+      setSortingState(SortingState.PriceAscending);
+      break;
+    case SortingState.PriceAscending:
+      setSortingState(SortingState.NameDescending);
+      break;
+    case SortingState.NameDescending:
+      setSortingState(SortingState.PriceDescending);
+      break;
+  }
+}
 
 export function getSortingIcon(sortingState: SortingState): JSX.Element {
   switch (sortingState) {
