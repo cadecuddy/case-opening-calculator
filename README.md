@@ -1,10 +1,10 @@
-# CSGO Case Calculator
-A cost calculator for CSGO container unboxings - available at [casecalculator.app](https://www.casecalculator.app/)
+# CS2 Case Calculator
+A cost calculator for CS2 container unboxings - available at [casecalculator.app](https://www.casecalculator.app/)
 
 ![image](https://user-images.githubusercontent.com/53287407/236367403-8bd0382a-e0d4-4b43-aa83-8d3eacc5c62c.png)
 
 ## Features ✅
-- [x] Real-time fetching of CSGO case, capsule, and package data from the Steam Community Market
+- [x] Real-time fetching of CS2 case, capsule, and package data from the Steam Community Market
   - [ ] 3rd-party market data (Skinport, Buff, etc.)
 - [x] Container filtering
 - [x] Sorting options (Price, Alphabetical)
