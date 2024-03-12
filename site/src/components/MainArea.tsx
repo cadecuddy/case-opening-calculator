@@ -11,6 +11,7 @@ import TextTransition, { presets } from "react-text-transition";
 import Link from "next/link";
 import Image from "next/image";
 import { getSortingIcon } from "y/utils/utils";
+import RotatingText from "./RotatingText";
 
 // Enums and constants
 export enum SortingState {
@@ -27,7 +28,6 @@ export enum ContainerType {
 
 const KEY_COST_USD = 2.49;
 const LOAD_INCREMENT = 20;
-const phrases = ["case", "souvenir", "capsule"];
 
 export function MainArea() {
   // State variables
@@ -43,7 +43,6 @@ export function MainArea() {
     { listing: Listing; quantity: number }[]
   >([]);
   const [search, setSearch] = React.useState("");
-  const [index, setIndex] = React.useState(0);
 
   // Data fetching
   const listings = api.listings.getListings.useQuery(undefined, {
@@ -150,10 +149,6 @@ export function MainArea() {
       }
     };
   }, []);
-  React.useEffect(() => {
-    const intervalId = setInterval(() => setIndex((index) => index + 1), 3000);
-    return () => clearTimeout(intervalId);
-  }, []);
 
   // Functions
   const loadMoreItems = () => {
@@ -228,15 +223,7 @@ export function MainArea() {
           <Image src="/sp.webp" alt="skinport" width={600} height={200} />
         </Link>
       </div>
-      <h1 className="text-center text-2xl antialiased sm:text-3xl">
-        Calculate the cost of your next{" "}
-        <span className="text-green-500">
-          <TextTransition inline springConfig={presets.gentle}>
-            {phrases[index % phrases.length]}
-          </TextTransition>
-        </span>{" "}
-        opening
-      </h1>
+      <RotatingText />
       <div className="text-center">
         <p className="text-lg text-gray-500">
           Prices last updated:{" "}
