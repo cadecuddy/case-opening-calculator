@@ -10,24 +10,26 @@ import Loading from "./Loading";
 import TextTransition, { presets } from "react-text-transition";
 import Link from "next/link";
 import Image from "next/image";
+import { getSortingIcon } from "y/utils/utils";
 
 // Enums and constants
-interface MainAreaProps {}
 export enum SortingState {
   PriceDescending,
   PriceAscending,
   NameDescending,
 }
+
 export enum ContainerType {
   Case,
   Capsule,
   Package,
 }
+
 const KEY_COST_USD = 2.49;
 const LOAD_INCREMENT = 20;
 const phrases = ["case", "souvenir", "capsule"];
 
-export const MainArea: React.FC<MainAreaProps> = () => {
+export function MainArea() {
   // State variables
   const [displayedItemsCount, setDisplayedItemsCount] =
     React.useState(LOAD_INCREMENT);
@@ -182,6 +184,7 @@ export const MainArea: React.FC<MainAreaProps> = () => {
       }
     });
   };
+
   const toggleSorting = () => {
     switch (sortingState) {
       case SortingState.PriceDescending:
@@ -195,52 +198,6 @@ export const MainArea: React.FC<MainAreaProps> = () => {
         break;
     }
   };
-  const getSortingIcon = () => {
-    switch (sortingState) {
-      case SortingState.PriceDescending:
-        return (
-          <>
-            Hi → Lo
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="ml-2 inline-block h-6 w-6 text-right"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </>
-        );
-      case SortingState.PriceAscending:
-        return (
-          <>
-            Lo → Hi
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="ml-2 inline-block h-6 w-6 text-right"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 15l7-7 7 7"
-              />
-            </svg>
-          </>
-        );
-      case SortingState.NameDescending:
-        return <>[A-Z]</>;
-    }
-  };
 
   const handleQuantityChange = (itemId: string, quantity: number) => {
     setSelectedItems((prevSelectedItems) => {
@@ -249,7 +206,6 @@ export const MainArea: React.FC<MainAreaProps> = () => {
       );
 
       if (itemIndex !== -1 && quantity >= 0) {
-        // Update the case quantity
         const updatedSelectedItems = [...prevSelectedItems];
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -361,7 +317,7 @@ export const MainArea: React.FC<MainAreaProps> = () => {
         setSearch={setSearch}
         sortingState={sortingState}
         toggleSorting={toggleSorting}
-        getSortingIcon={getSortingIcon}
+        getSortingIcon={() => getSortingIcon(sortingState)}
         setActiveContainer={setActiveContainer}
       />
 
@@ -391,4 +347,4 @@ export const MainArea: React.FC<MainAreaProps> = () => {
       )}
     </div>
   );
-};
+}
