@@ -1,4 +1,6 @@
 import React, { useMemo, useState } from "react";
+import Image from "next/image";
+import { KEY_COST_USD, US_SALES_TAX } from "y/utils/constants";
 
 interface Item {
   name: string;
@@ -40,9 +42,6 @@ const CurrencyDisplay: React.FC<{ amount: number; currency: string }> = ({
     }).format(amount)}
   </div>
 );
-
-const KEY_COST_USD = 2.49;
-const US_SALES_TAX = 0.0712;
 
 export const UnboxingCost: React.FC<UnboxingCostProps> = ({
   totalCost,
@@ -146,34 +145,13 @@ export const UnboxingCost: React.FC<UnboxingCostProps> = ({
       <h2 className="mb-2 text-2xl font-bold underline sm:text-left">
         TOTAL COST
         <span className="z-10 inline" onClick={() => onReset()}>
-          <svg
-            viewBox="0 0 21 21"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="#FFFFFF"
+          <Image
+            src="/reset.svg"
+            alt="reset"
+            width={20}
+            height={20}
             className="float-right ml-1 inline-block h-6 w-6 align-middle text-white hover:cursor-pointer"
-          >
-            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-            <g
-              id="SVGRepo_tracerCarrier"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            ></g>
-            <g id="SVGRepo_iconCarrier">
-              {" "}
-              <g
-                fill="none"
-                fill-rule="evenodd"
-                stroke="#FFFFFF"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                transform="matrix(0 1 1 0 2.5 2.5)"
-              >
-                {" "}
-                <path d="m3.98652376 1.07807068c-2.38377179 1.38514556-3.98652376 3.96636605-3.98652376 6.92192932 0 4.418278 3.581722 8 8 8s8-3.581722 8-8-3.581722-8-8-8"></path>{" "}
-                <path d="m4 1v4h-4" transform="matrix(1 0 0 -1 0 6)"></path>{" "}
-              </g>{" "}
-            </g>
-          </svg>
+          />
         </span>
         <span className="float-right mr-1 inline align-middle text-base">
           <select

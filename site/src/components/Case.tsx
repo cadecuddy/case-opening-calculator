@@ -2,7 +2,7 @@ import Image from "next/image";
 import React from "react";
 import Link from "next/link";
 import { useState } from "react";
-import { ExchangeRateResponse } from "./CostDisplay";
+import type { ExchangeRateResponse } from "./CostDisplay";
 
 type Props = {
   name: string;
